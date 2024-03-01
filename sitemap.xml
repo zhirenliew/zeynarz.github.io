@@ -2,16 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://zeynarz.github.io/tags/blog/</loc>
+    <lastmod>2024-02-26T17:58:26+08:00</lastmod>
+  </url><url>
     <loc>https://zeynarz.github.io/posts/gcc24/</loc>
     <lastmod>2024-02-26T17:58:26+08:00</lastmod>
   </url><url>
     <loc>https://zeynarz.github.io/posts/</loc>
     <lastmod>2024-02-26T17:58:26+08:00</lastmod>
   </url><url>
+    <loc>https://zeynarz.github.io/tags/</loc>
+    <lastmod>2024-02-26T17:58:26+08:00</lastmod>
+  </url><url>
     <loc>https://zeynarz.github.io/</loc>
     <lastmod>2024-02-26T17:58:26+08:00</lastmod>
   </url><url>
+    <loc>https://zeynarz.github.io/tags/pwn/</loc>
+    <lastmod>2023-12-16T22:09:37+08:00</lastmod>
+  </url><url>
     <loc>https://zeynarz.github.io/posts/wgmy23/</loc>
+    <lastmod>2023-12-16T22:09:37+08:00</lastmod>
+  </url><url>
+    <loc>https://zeynarz.github.io/tags/writeups/</loc>
     <lastmod>2023-12-16T22:09:37+08:00</lastmod>
   </url><url>
     <loc>https://zeynarz.github.io/posts/codegate_finals23/</loc>
@@ -21,7 +33,7 @@
   </url><url>
     <loc>https://zeynarz.github.io/posts/</loc>
   </url><url>
-    <loc>https://zeynarz.github.io/tags/</loc>
+    <loc>https://zeynarz.github.io/search/</loc>
   </url><url>
     <loc>https://zeynarz.github.io/aboutme/</loc>
   </url>
