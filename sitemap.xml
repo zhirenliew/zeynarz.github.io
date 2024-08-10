@@ -2,13 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://zeynarz.github.io/posts/making_cracked_hackers/</loc>
+    <lastmod>2024-08-10T13:25:19+08:00</lastmod>
+  </url><url>
+    <loc>https://zeynarz.github.io/posts/</loc>
+    <lastmod>2024-08-10T13:25:19+08:00</lastmod>
+  </url><url>
+    <loc>https://zeynarz.github.io/</loc>
+    <lastmod>2024-08-10T13:25:19+08:00</lastmod>
+  </url><url>
     <loc>https://zeynarz.github.io/tags/blog/</loc>
     <lastmod>2024-06-27T18:28:54+08:00</lastmod>
   </url><url>
     <loc>https://zeynarz.github.io/posts/hacktheon_24/</loc>
-    <lastmod>2024-06-27T18:28:54+08:00</lastmod>
-  </url><url>
-    <loc>https://zeynarz.github.io/posts/</loc>
     <lastmod>2024-06-27T18:28:54+08:00</lastmod>
   </url><url>
     <loc>https://zeynarz.github.io/tags/pwn/</loc>
@@ -18,9 +24,6 @@
     <lastmod>2024-06-27T18:28:54+08:00</lastmod>
   </url><url>
     <loc>https://zeynarz.github.io/tags/writeups/</loc>
-    <lastmod>2024-06-27T18:28:54+08:00</lastmod>
-  </url><url>
-    <loc>https://zeynarz.github.io/</loc>
     <lastmod>2024-06-27T18:28:54+08:00</lastmod>
   </url><url>
     <loc>https://zeynarz.github.io/posts/lakectf_finals23/</loc>
