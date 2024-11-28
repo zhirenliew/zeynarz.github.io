@@ -2,35 +2,35 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>writeups on zhiren</title>
-    <link>https://zhirenl.github.io/tags/writeups/</link>
+    <link>https://zh1ren.github.io/tags/writeups/</link>
     <description>Recent content in writeups on zhiren</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 27 Jun 2024 18:28:54 +0800</lastBuildDate><atom:link href="https://zhirenl.github.io/tags/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 27 Jun 2024 18:28:54 +0800</lastBuildDate><atom:link href="https://zh1ren.github.io/tags/writeups/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hacktheon Sejong Finals 2024</title>
-      <link>https://zhirenl.github.io/posts/hacktheon_24/</link>
+      <link>https://zh1ren.github.io/posts/hacktheon_24/</link>
       <pubDate>Thu, 27 Jun 2024 18:28:54 +0800</pubDate>
       
-      <guid>https://zhirenl.github.io/posts/hacktheon_24/</guid>
+      <guid>https://zh1ren.github.io/posts/hacktheon_24/</guid>
       <description>writeups for hacktheon finals and my experience at korea</description>
     </item>
     
     <item>
       <title>Wargames.MY 2023</title>
-      <link>https://zhirenl.github.io/posts/wgmy23/</link>
+      <link>https://zh1ren.github.io/posts/wgmy23/</link>
       <pubDate>Sat, 16 Dec 2023 22:09:37 +0800</pubDate>
       
-      <guid>https://zhirenl.github.io/posts/wgmy23/</guid>
+      <guid>https://zh1ren.github.io/posts/wgmy23/</guid>
       <description>writeups for wargames.my 2023 pwn (and 1 ppc) challs</description>
     </item>
     
     <item>
       <title>Codegate Finals 2023 (Juniors)</title>
-      <link>https://zhirenl.github.io/posts/codegate_finals23/</link>
+      <link>https://zh1ren.github.io/posts/codegate_finals23/</link>
       <pubDate>Sun, 03 Sep 2023 09:38:30 +0000</pubDate>
       
-      <guid>https://zhirenl.github.io/posts/codegate_finals23/</guid>
+      <guid>https://zh1ren.github.io/posts/codegate_finals23/</guid>
       <description>my experience at codegate 2023 finals, and writeups for junior challs</description>
     </item>
     
