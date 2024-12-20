@@ -6,7 +6,16 @@
     <description>Recent content in Posts on zhiren</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 10 Aug 2024 13:25:19 +0800</lastBuildDate><atom:link href="https://zh1ren.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 17 Dec 2024 09:38:09 +0800</lastBuildDate><atom:link href="https://zh1ren.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ASEAN Cyber Shield 2024</title>
+      <link>https://zh1ren.github.io/posts/acs24/</link>
+      <pubDate>Tue, 17 Dec 2024 09:38:09 +0800</pubDate>
+      
+      <guid>https://zh1ren.github.io/posts/acs24/</guid>
+      <description>writeups for acs pwn challs</description>
+    </item>
+    
     <item>
       <title>Making cracked hackers in malaysia</title>
       <link>https://zh1ren.github.io/posts/making_cracked_hackers/</link>

