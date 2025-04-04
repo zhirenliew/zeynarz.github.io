@@ -9,15 +9,15 @@
 <meta name="keywords" content="">
 <meta name="description" content="writeups for acs pwn challs">
 <meta name="author" content="">
-<link rel="canonical" href="https://zh1ren.github.io/posts/acs24/">
+<link rel="canonical" href="https://zhirenliew.github.io/posts/acs24/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.bff9ea534f65d95fa54e4acbb4245968e8f466efcde15f973a90ca891dd8766e.css" integrity="sha256-v/nqU09l2V&#43;lTkrLtCRZaOj0Zu/N4V&#43;XOpDKiR3Ydm4=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://zh1ren.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://zh1ren.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://zh1ren.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://zh1ren.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://zh1ren.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="https://zhirenliew.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://zhirenliew.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://zhirenliew.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://zhirenliew.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://zhirenliew.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
 <noscript>
@@ -70,7 +70,7 @@ if (!doNotTrack) {
 <meta property="og:title" content="ASEAN Cyber Shield 2024" />
 <meta property="og:description" content="writeups for acs pwn challs" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://zh1ren.github.io/posts/acs24/" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://zhirenliew.github.io/posts/acs24/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2024-12-17T09:38:09+08:00" />
 <meta property="article:modified_time" content="2024-12-17T09:38:09+08:00" />
 
@@ -83,18 +83,18 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "https://zh1ren.github.io/posts/"
-    }, 
+  "itemListElement": [, 
     {
       "@type": "ListItem",
       "position":  2 ,
+      "name": "Posts",
+      "item": "https://zhirenliew.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
       "name": "ASEAN Cyber Shield 2024",
-      "item": "https://zh1ren.github.io/posts/acs24/"
+      "item": "https://zhirenliew.github.io/posts/acs24/"
     }
   ]
 }
@@ -116,14 +116,14 @@ if (!doNotTrack) {
   "dateModified": "2024-12-17T09:38:09+08:00",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://zh1ren.github.io/posts/acs24/"
+    "@id": "https://zhirenliew.github.io/posts/acs24/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "zhiren",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://zh1ren.github.io/favicon.ico"
+      "url": "https://zhirenliew.github.io/favicon.ico"
     }
   }
 }
@@ -145,7 +145,7 @@ if (!doNotTrack) {
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://zh1ren.github.io/" accesskey="h" title="zhiren (Alt + H)">zhiren</a>
+            <a href="https://zhirenliew.github.io" accesskey="h" title="zhiren (Alt + H)">zhiren</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -171,7 +171,7 @@ if (!doNotTrack) {
         </div>
         <ul id="menu">
             <li>
-                <a href="https://zh1ren.github.io/about/" title="About">
+                <a href="https://zhirenliew.github.io/about/" title="About">
                     <span>About</span>
                 </a>
             </li>
@@ -182,7 +182,7 @@ if (!doNotTrack) {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://zh1ren.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://zh1ren.github.io/posts/">Posts</a></div>
+    <div class="breadcrumbs"><a href="https://zhirenliew.github.io">Home</a>&nbsp;»&nbsp;<a href="https://zhirenliew.github.io/posts/">Posts</a></div>
     <h1 class="post-title">
       ASEAN Cyber Shield 2024
     </h1>
@@ -198,7 +198,7 @@ if (!doNotTrack) {
 </p>
 <p>The ctf was organised by <a href="https://www.kisa.or.kr/">KISA</a>, and had teams from all the ASEAN countries. It had some difficult and high quality pwn challs, and I&rsquo;ll be sharing the writeups of two of them in this post.<br>
 (was busy, so post is almost a month late)</p>
-<p>All attachments can be found <a href="https://github.com/zh1ren/ctf/tree/main/acs/attachments">here</a>.</p>
+<p>All attachments can be found <a href="https://github.com/zhirenliew/ctf/tree/main/acs/attachments">here</a>.</p>
 <blockquote>
 <p>Special thanks to <a href="https://www.rehack.xyz/home/">RE:HACK</a> and <a href="https://www.nacsa.gov.my/">NACSA</a> for selecting us to represent Malaysia and the support given by them throughout the contest.</p>
 </blockquote>
@@ -1013,7 +1013,7 @@ So if you want to see his exploit, maybe you can contact him.</p>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2024 <a href="https://zh1ren.github.io/">zhiren</a></span>
+    <span>&copy; 2025 <a href="https://zhirenliew.github.io">zhiren</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

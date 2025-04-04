@@ -2,80 +2,80 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>zhiren</title>
-    <link>https://zh1ren.github.io/</link>
+    <link>https://zhirenliew.github.io/</link>
     <description>Recent content on zhiren</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 17 Dec 2024 09:38:09 +0800</lastBuildDate><atom:link href="https://zh1ren.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 17 Dec 2024 09:38:09 +0800</lastBuildDate><atom:link href="https://zhirenliew.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ASEAN Cyber Shield 2024</title>
-      <link>https://zh1ren.github.io/posts/acs24/</link>
+      <link>https://zhirenliew.github.io/posts/acs24/</link>
       <pubDate>Tue, 17 Dec 2024 09:38:09 +0800</pubDate>
       
-      <guid>https://zh1ren.github.io/posts/acs24/</guid>
+      <guid>https://zhirenliew.github.io/posts/acs24/</guid>
       <description>writeups for acs pwn challs</description>
     </item>
     
     <item>
       <title>Making cracked hackers in malaysia</title>
-      <link>https://zh1ren.github.io/posts/making_cracked_hackers/</link>
+      <link>https://zhirenliew.github.io/posts/making_cracked_hackers/</link>
       <pubDate>Sat, 10 Aug 2024 13:25:19 +0800</pubDate>
       
-      <guid>https://zh1ren.github.io/posts/making_cracked_hackers/</guid>
+      <guid>https://zhirenliew.github.io/posts/making_cracked_hackers/</guid>
       <description>my opinions on how to make skilled hackers in malaysia</description>
     </item>
     
     <item>
       <title>Hacktheon Sejong Finals 2024</title>
-      <link>https://zh1ren.github.io/posts/hacktheon_24/</link>
+      <link>https://zhirenliew.github.io/posts/hacktheon_24/</link>
       <pubDate>Thu, 27 Jun 2024 18:28:54 +0800</pubDate>
       
-      <guid>https://zh1ren.github.io/posts/hacktheon_24/</guid>
+      <guid>https://zhirenliew.github.io/posts/hacktheon_24/</guid>
       <description>writeups for hacktheon finals and my experience at korea</description>
     </item>
     
     <item>
       <title>LakeCTF Finals 2023</title>
-      <link>https://zh1ren.github.io/posts/lakectf_finals23/</link>
+      <link>https://zhirenliew.github.io/posts/lakectf_finals23/</link>
       <pubDate>Sat, 11 May 2024 17:33:10 +0800</pubDate>
       
-      <guid>https://zh1ren.github.io/posts/lakectf_finals23/</guid>
+      <guid>https://zhirenliew.github.io/posts/lakectf_finals23/</guid>
       <description>my experience attending lakectf finals at EPFL</description>
     </item>
     
     <item>
       <title>Global Cybersecurity Camp 2024</title>
-      <link>https://zh1ren.github.io/posts/gcc24/</link>
+      <link>https://zhirenliew.github.io/posts/gcc24/</link>
       <pubDate>Mon, 26 Feb 2024 17:58:26 +0800</pubDate>
       
-      <guid>https://zh1ren.github.io/posts/gcc24/</guid>
+      <guid>https://zhirenliew.github.io/posts/gcc24/</guid>
       <description>my GCC 2024 experience at Chon Buri, Thailand</description>
     </item>
     
     <item>
       <title>Wargames.MY 2023</title>
-      <link>https://zh1ren.github.io/posts/wgmy23/</link>
+      <link>https://zhirenliew.github.io/posts/wgmy23/</link>
       <pubDate>Sat, 16 Dec 2023 22:09:37 +0800</pubDate>
       
-      <guid>https://zh1ren.github.io/posts/wgmy23/</guid>
+      <guid>https://zhirenliew.github.io/posts/wgmy23/</guid>
       <description>writeups for wargames.my 2023 pwn (and 1 ppc) challs</description>
     </item>
     
     <item>
       <title>Codegate Finals 2023 (Juniors)</title>
-      <link>https://zh1ren.github.io/posts/codegate_finals23/</link>
+      <link>https://zhirenliew.github.io/posts/codegate_finals23/</link>
       <pubDate>Sun, 03 Sep 2023 09:38:30 +0000</pubDate>
       
-      <guid>https://zh1ren.github.io/posts/codegate_finals23/</guid>
+      <guid>https://zhirenliew.github.io/posts/codegate_finals23/</guid>
       <description>my experience at codegate 2023 finals, and writeups for junior challs</description>
     </item>
     
     <item>
       <title>刘智仁</title>
-      <link>https://zh1ren.github.io/about/</link>
+      <link>https://zhirenliew.github.io/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://zh1ren.github.io/about/</guid>
+      <guid>https://zhirenliew.github.io/about/</guid>
       <description>about</description>
     </item>
     
